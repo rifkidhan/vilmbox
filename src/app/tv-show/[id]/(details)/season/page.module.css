@@ -1,0 +1,28 @@
+.list {
+	display: flex;
+	flex-direction: column;
+	gap: 3rem;
+	max-inline-size: 92dvw;
+	inline-size: 100%;
+	margin-inline: auto;
+}
+
+.card {
+	h2 {
+		font-weight: 600;
+		font-size: var(--pf-text-md);
+
+		.card:hover & {
+			text-decoration: underline;
+			text-underline-offset: 2px;
+		}
+	}
+}
+
+.overview {
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+	line-clamp: 3;
+}

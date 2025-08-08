@@ -1,0 +1,66 @@
+:root {
+	color-scheme: light;
+
+	/* color */
+
+	--pf-primary: oklch(77.06% 0.135446 184.5997);
+	--pf-primary-dark: oklch(44.96% 0.0783 185.2);
+	--pf-primary-light: oklch(80.42% 0.1286 186.56);
+	--pf-sunflower: oklch(88.63% 0.1843 107.6);
+
+	--pf-white: oklch(98.48% 0 0);
+	--pf-black: oklch(14.05% 0.0044 285.82);
+
+	--pf-accent-5: oklch(98.48% 0 0);
+	--pf-accent-10: oklch(96.75% 0.0014 286.37);
+	--pf-accent-20: oklch(91.97% 0.004 286.32);
+	--pf-accent-30: oklch(87.16% 0.0056 286.28);
+	--pf-accent-40: oklch(71.19% 0.0129 286.07);
+	--pf-accent-50: oklch(55.19% 0.0137 285.94);
+	--pf-accent-60: oklch(44.17% 0.0146 285.79);
+	--pf-accent-70: oklch(37.05% 0.012 285.8);
+	--pf-accent-80: oklch(27.41% 0.0055 286.03);
+	--pf-accent-90: oklch(21.03% 0.0059 285.88);
+	--pf-accent-95: oklch(14.05% 0.0044 285.82);
+
+	/* text */
+	--pf-text-display: clamp(3.5rem, 0.75rem + 5vw, 4.5rem);
+	--pf-text-xl: clamp(2.25rem, 0.75rem + 3vw, 3.5rem);
+	--pf-text-lg: clamp(1.5rem, 0.25rem + 2vw, 2.25rem);
+	--pf-text-md: clamp(1.125rem, 0.25rem + 1.7vw, 1.5rem);
+	--pf-text-normal: clamp(0.875rem, 0.15rem + 2vw, 1.125rem);
+	--pf-text-sm: clamp(0.75rem, 0.12rem + 2vw, 0.875rem);
+
+	/* shadow */
+	--pf-shadow:
+		0 1px 3px 0 hsla(0, 0%, 0%, 0.3), 0 1px 2px -1px hsla(0, 0%, 0%, 0.3);
+	--pf-shadow-md:
+		0 4px 6px -1px hsla(0, 0%, 0%, 0.3), 0 2px 4px -2px hsla(0, 0%, 0%, 0.3);
+	--pf-shadow-lg:
+		0 10px 15px -3px hsla(0, 0%, 0%, 0.3), 0 4px 6px -4px hsla(0, 0%, 0%, 0.3);
+
+	--pf-radius: 0.5rem;
+
+	--pf-animation-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+[data-theme="dark"] {
+	color-scheme: dark;
+
+	/* color */
+
+	--pf-primary-light: oklch(44.96% 0.0783 185.2);
+	--pf-primary-dark: oklch(80.42% 0.1286 186.56);
+
+	--pf-accent-5: oklch(14.05% 0.0044 285.82);
+	--pf-accent-10: oklch(21.03% 0.0059 285.88);
+	--pf-accent-20: oklch(27.41% 0.0055 286.03);
+	--pf-accent-30: oklch(37.05% 0.012 285.8);
+	--pf-accent-40: oklch(44.17% 0.0146 285.79);
+	--pf-accent-50: oklch(55.19% 0.0137 285.94);
+	--pf-accent-60: oklch(71.19% 0.0129 286.07);
+	--pf-accent-70: oklch(87.16% 0.0056 286.28);
+	--pf-accent-80: oklch(91.97% 0.004 286.32);
+	--pf-accent-90: oklch(96.75% 0.0014 286.37);
+	--pf-accent-95: oklch(98.48% 0 0);
+}

@@ -1,0 +1,173 @@
+.hero {
+	inline-size: 100%;
+	block-size: max-content;
+	position: relative;
+	color: var(--pf-white);
+}
+
+.backdrop {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	inline-size: 100%;
+	block-size: 100%;
+	background-color: var(--pf-accent-80);
+}
+
+.wrapper {
+	inline-size: 100%;
+	container: hero / inline-size;
+	backdrop-filter: blur(48px) brightness(0.65);
+	padding-block-start: calc(var(--pf-header-height) + 2rem);
+	padding-block-end: 2rem;
+}
+
+.details {
+	display: grid;
+	grid-template-areas:
+		"poster"
+		"title"
+		"misc"
+		"actions"
+		"genres"
+		"overview"
+		"credits";
+
+	grid-template-columns: 1fr;
+	grid-template-rows: auto 1fr repeat(3, auto) 1fr auto;
+	place-items: center;
+	max-inline-size: 92dvw;
+	margin-inline: auto;
+	column-gap: 3rem;
+	row-gap: 1rem;
+
+	@container hero (width >= 848px) {
+		grid-template-areas:
+			"poster title"
+			"poster misc"
+			"poster actions"
+			"poster overview"
+			"poster genres"
+			"poster credits";
+
+		grid-template-columns: auto 1fr;
+		grid-template-rows: 1fr repeat(2, auto) 1fr repeat(2, auto);
+		place-items: start;
+	}
+
+	@container hero (width >= 1024px) {
+		grid-template-areas:
+			"poster title title"
+			"poster misc genres"
+			"poster actions ."
+			"poster overview overview"
+			"poster credits credits";
+		grid-template-columns: auto repeat(2, 1fr);
+		grid-template-rows: 1fr repeat(2, auto) 1fr auto;
+	}
+}
+
+.poster {
+	grid-area: poster;
+	inline-size: 35cqw;
+	block-size: fit-content;
+	display: block;
+	overflow: hidden;
+	border-radius: var(--pf-radius);
+	box-shadow: var(--pf-shadow-md);
+
+	@container hero (width >= 848px) {
+		inline-size: 25cqw;
+	}
+}
+
+.title {
+	grid-area: title;
+
+	@container hero (width < 848px) {
+		text-align: center;
+	}
+
+	& > h1,
+	h2 {
+		text-wrap: balance;
+		font-size: var(--pf-text-xl);
+		font-weight: 600;
+		line-height: 1;
+	}
+
+	.tagline {
+		font-size: var(--pf-text-md);
+		font-style: italic;
+		display: block;
+	}
+}
+
+.misc {
+	grid-area: misc;
+}
+
+.genres {
+	grid-area: genres;
+	flex-wrap: wrap;
+}
+
+.action {
+	grid-area: actions;
+	display: flex;
+	align-items: center;
+	gap: 1.5rem;
+
+	& > .vote {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 0.25rem;
+
+		& > .icon {
+			inline-size: 2.5rem;
+			block-size: 2.5rem;
+
+			& > svg {
+				fill: var(--pf-sunflower);
+				inline-size: 100%;
+				block-size: auto;
+			}
+		}
+
+		& > .score {
+			display: flex;
+			flex-direction: column;
+
+			& > :not(.count) {
+				font-weight: 600;
+			}
+
+			& > .count {
+				font-size: var(--pf-text-sm);
+			}
+		}
+	}
+}
+
+.overview {
+	grid-area: overview;
+	text-wrap: pretty;
+}
+
+.credits {
+	grid-area: credits;
+	display: grid;
+	grid-template-columns: subgrid;
+	row-gap: 0.5rem;
+}
+
+.skeleton {
+	inline-size: 100%;
+	block-size: calc(80dvh + 2rem);
+	animation: var(--pf-animation-pulse);
+	background-color: var(--pf-accent-50);
+	border-radius: var(--pf-radius);
+	overflow: hidden;
+}

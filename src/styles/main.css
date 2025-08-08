@@ -1,0 +1,163 @@
+@layer theme, base, components, utilities;
+
+@import "themes.css" layer(theme);
+@import "base.css" layer(base);
+@import "components.css" layer(components);
+@import "./components/card.css";
+
+@keyframes circle-in-top-right {
+	from {
+		clip-path: circle(0%);
+	}
+	to {
+		clip-path: circle(150% at top right);
+	}
+}
+
+/* @media (prefers-reduced-motion: no-preference) {
+	[style*='--tag'] {
+		view-transition-name: var(--tag);
+	}
+
+	@media (width <= 1600px) {
+		::view-transition-old(theme) {
+			animation: none;
+		}
+
+		::view-transition-new(theme) {
+			animation: 2s cubic-bezier(0.25, 1, 0.3, 1) circle-in-top-right forwards;
+		}
+	}
+} */
+
+@layer base {
+	:where(html) {
+		--pf-header-height: 3rem;
+	}
+
+	html:has(dialog[open]) {
+		overflow: hidden;
+	}
+
+	@keyframes pulse {
+		50% {
+			opacity: 0.5;
+		}
+	}
+}
+
+@layer components {
+	:where(main) {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 3rem;
+		inline-size: 100%;
+		margin-block-end: 3rem;
+		min-block-size: calc(100dvh - (var(--pf-header-height) * 2));
+	}
+
+	:where(section) {
+		display: flex;
+		flex-direction: column;
+		inline-size: 100%;
+		max-inline-size: 92dvw;
+		margin-inline: auto;
+		gap: 2rem;
+	}
+
+	.section-title {
+		font-size: var(--pf-text-lg);
+		font-weight: 700;
+		position: relative;
+		line-height: 1;
+		width: fit-content;
+
+		& > span {
+			margin-inline-start: 0.5ch;
+		}
+
+		&::before {
+			content: "";
+			inline-size: 2.5ch;
+			block-size: 100%;
+			position: absolute;
+			top: 0;
+			background-color: var(--pf-primary-light);
+			z-index: -1;
+		}
+	}
+
+	.subsection {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+
+		h3 {
+			font-size: var(--pf-text-md);
+			font-weight: 600;
+		}
+	}
+
+	.info-details {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	:where(details) {
+		display: flex;
+		flex-direction: column;
+		position: relative;
+		box-shadow: var(--pf-shadow-md);
+		border-radius: var(--pf-radius);
+		overflow: hidden;
+
+		&[open] {
+			gap: 1rem;
+		}
+
+		& > summary {
+			cursor: pointer;
+		}
+
+		&::details-content {
+			opacity: 0;
+			block-size: 0;
+			overflow-y: clip;
+			transition:
+				content-visibility 0.5s allow-discrete,
+				opacity 0.5s,
+				block-size 0.5s;
+		}
+
+		&[open]::details-content {
+			opacity: 1;
+			block-size: fit-content;
+		}
+	}
+}
+
+@layer utilities {
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border-width: 0;
+	}
+
+	@keyframes pulse {
+		50% {
+			opacity: 0.5;
+		}
+	}
+
+	.pulse {
+		animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+	}
+}

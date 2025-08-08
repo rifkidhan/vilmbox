@@ -1,0 +1,112 @@
+.banner {
+	inline-size: 100%;
+	block-size: max-content;
+	position: relative;
+	color: var(--pf-white);
+
+	.backdrop {
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		inline-size: 100%;
+		block-size: 100%;
+		background-color: var(--pf-accent-80);
+	}
+
+	.wrapper {
+		inline-size: 100%;
+		backdrop-filter: blur(48px) brightness(0.65);
+		padding-block: 2rem;
+
+		& > .content {
+			display: flex;
+			gap: 1rem;
+			max-inline-size: 92dvw;
+			margin-inline: auto;
+
+			& > .thumbnail {
+				display: block;
+				block-size: fit-content;
+				inline-size: 10%;
+				border-radius: var(--pf-radius);
+				box-shadow: var(--pf-shadow);
+				overflow: hidden;
+
+				@media (max-width: 675px) {
+					display: none;
+				}
+			}
+
+			& > hgroup {
+				display: flex;
+				flex-direction: column-reverse;
+
+				h1 {
+					font-size: var(--pf-text-xl);
+					font-weight: 600;
+					line-height: 1;
+					text-transform: capitalize;
+				}
+
+				h2 {
+					font-size: var(--pf-text-lg);
+				}
+			}
+		}
+	}
+}
+
+.skeleton {
+	inline-size: 100%;
+	block-size: max-content;
+	position: relative;
+	background-color: var(--pf-accent-5);
+
+	.wrapper {
+		padding-block: 2rem;
+		display: flex;
+		gap: 1rem;
+		max-inline-size: 92dvw;
+		margin-inline: auto;
+
+		.thumbnail {
+			background-color: var(--pf-accent-50);
+			display: block;
+			aspect-ratio: 2 / 3;
+			inline-size: 10%;
+			border-radius: var(--pf-radius);
+			box-shadow: var(--pf-shadow);
+			overflow: hidden;
+			animation: var(--pf-animation-pulse);
+
+			@media (max-width: 675px) {
+				display: none;
+			}
+		}
+
+		.title {
+			display: flex;
+			flex-direction: column-reverse;
+			inline-size: 70%;
+			gap: 1rem;
+
+			& > * {
+				border-radius: var(--pf-radius);
+				box-shadow: var(--pf-shadow);
+				overflow: hidden;
+				animation: var(--pf-animation-pulse);
+				background-color: var(--pf-accent-50);
+			}
+
+			& > :nth-child(1) {
+				block-size: var(--pf-text-xl);
+				inline-size: 40%;
+			}
+			& > :nth-child(2) {
+				block-size: var(--pf-text-lg);
+				inline-size: 70%;
+			}
+		}
+	}
+}
