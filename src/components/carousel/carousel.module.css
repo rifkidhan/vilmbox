@@ -2,6 +2,7 @@
 	container: carousel / inline-size;
 	display: flex;
 	flex-direction: column;
+	position: relative;
 }
 
 .viewport {
@@ -21,14 +22,21 @@
 .container {
 	display: grid;
 	grid-auto-flow: column;
-	grid-auto-columns: calc(
-		var(--carousel-column-width) -
-		var(--carousel-column-gap)
-	);
-	column-gap: var(--carousel-column-gap);
 	touch-action: pan-y pinch-zoom;
-	padding-block-start: calc(0.125rem + 1.2cqi);
-	padding-block-end: calc(0.125rem + 3cqi);
+
+	&:not(.full) {
+		grid-auto-columns: calc(
+			var(--carousel-column-width) -
+			var(--carousel-column-gap)
+		);
+		column-gap: var(--carousel-column-gap);
+		padding-block-start: calc(0.125rem + 1.2cqi);
+		padding-block-end: calc(0.125rem + 3cqi);
+	}
+
+	&:is(.full) {
+		grid-auto-columns: 100%;
+	}
 }
 
 .skeleton {
@@ -93,6 +101,32 @@
 		&[value]::-webkit-progress-value,
 		&[value]::-moz-progress-bar {
 			background-color: var(--pf-primary);
+		}
+	}
+}
+
+.dotButtons {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	bottom: 1rem;
+	inset-inline: 0;
+
+	& > .dots {
+		display: flex;
+		gap: 0.5rem;
+
+		& > button {
+			inline-size: 1rem;
+			block-size: 1rem;
+			border: solid 2px var(--pf-accent-90);
+			border-radius: var(--pf-radius);
+
+			&[aria-current="true"] {
+				background-color: var(--pf-accent-90);
+			}
 		}
 	}
 }

@@ -16,6 +16,11 @@ import Icon from "../icon";
 import s from "./carousel.module.css";
 
 type CarouselApi = UseEmblaCarouselType[1];
+
+type CarouselProps = {
+	full?: boolean;
+};
+
 type CarousePropsContenxt = {
 	carouselRef: ReturnType<typeof useEmblaCarousel>[0];
 	api: ReturnType<typeof useEmblaCarousel>[1];
@@ -25,7 +30,8 @@ type CarousePropsContenxt = {
 	canScrollNext: boolean;
 	progress: number;
 	scrollable: boolean;
-};
+	slideInView: number;
+} & CarouselProps;
 
 const CarouselContext = createContext<CarousePropsContenxt | null>(null);
 
@@ -41,17 +47,19 @@ const useCarousel = () => {
 
 export const Carousel = ({
 	className,
+	full,
 	...props
-}: React.ComponentProps<"div"> & { full?: boolean }) => {
+}: React.ComponentProps<"div"> & CarouselProps) => {
 	const [carouselRef, api] = useEmblaCarousel({
 		align: "center",
-		loop: props.full,
+		loop: full,
 		slidesToScroll: "auto",
 	});
 
 	const [canScrollPrev, setCanScrollPrev] = useState(false);
 	const [canScrollNext, setCanScrollNext] = useState(false);
 	const [progress, setProgress] = useState(0);
+	const [slideInView, setSlideInView] = useState(0);
 	const [scrollable, setScrollable] = useState(true);
 
 	const onResize = useCallback(
@@ -67,6 +75,7 @@ export const Carousel = ({
 		if (!api) return;
 		setCanScrollPrev(api.canScrollPrev());
 		setCanScrollNext(api.canScrollNext());
+		setSlideInView(api.selectedScrollSnap());
 	}, []);
 
 	const onProgress = useCallback((api: CarouselApi) => {
@@ -133,6 +142,8 @@ export const Carousel = ({
 				canScrollPrev,
 				progress,
 				scrollable,
+				slideInView,
+				full: full,
 			}}
 		>
 			<div className={cn(s.carousel, className)} {...props}>
@@ -146,11 +157,15 @@ export const CarouselViewport = ({
 	className,
 	...props
 }: React.ComponentProps<"div">) => {
-	const { carouselRef } = useCarousel();
+	const { carouselRef, full } = useCarousel();
 
 	return (
 		<div className={cn(s.viewport, className)} ref={carouselRef}>
-			<div className={s.container} aria-live="polite" {...props}>
+			<div
+				className={cn(s.container, { [s.full]: full })}
+				aria-live="polite"
+				{...props}
+			>
 				{props.children}
 			</div>
 		</div>
@@ -194,4 +209,33 @@ export const CarouselButtons = () => {
 			</div>
 		</div>
 	) : null;
+};
+
+export const CarouselDotButtons = ({ length = 8 }: { length?: number }) => {
+	const { api, slideInView } = useCarousel();
+
+	const scrollTo = useCallback(
+		(index: number) => {
+			api?.scrollTo(index);
+		},
+		[api],
+	);
+
+	return (
+		<div className={s.dotButtons}>
+			<div className={s.dots}>
+				{Array(length)
+					.fill(0)
+					.map((_, i) => (
+						<button
+							key={i}
+							type="button"
+							aria-label={`Slides ${i + 1}`}
+							aria-current={slideInView === i}
+							onClick={() => scrollTo(i)}
+						/>
+					))}
+			</div>
+		</div>
+	);
 };

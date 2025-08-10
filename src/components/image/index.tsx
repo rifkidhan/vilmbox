@@ -63,7 +63,7 @@ export default function Image({
 			sizes={
 				fill
 					? "(min-width: 768px) 66vw, 100vw"
-					: "(min-width: 768px) 33vw, 100vw"
+					: "(min-width: 768px) 50vw, 100vw"
 			}
 			{...props}
 		/>

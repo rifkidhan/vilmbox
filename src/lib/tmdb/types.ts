@@ -1,4 +1,4 @@
-type MediaType = "tv" | "movie" | "person";
+export type MediaType = "tv" | "movie" | "person";
 
 interface Base {
 	id: number;

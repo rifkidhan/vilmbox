@@ -3,6 +3,11 @@
 	block-size: max-content;
 	position: relative;
 	color: var(--pf-white);
+	display: block;
+
+	&:is(.minimal) {
+		user-select: none;
+	}
 }
 
 .backdrop {
@@ -13,14 +18,59 @@
 	inline-size: 100%;
 	block-size: 100%;
 	background-color: var(--pf-accent-80);
+
+	&:is(.minimal) {
+		background-color: var(--pf-accent-70);
+		inline-size: 80%;
+		left: unset;
+		right: 0;
+		z-index: -1;
+		mask-image: linear-gradient(90deg, transparent, transparent 8%, black 50%);
+
+		@media (max-width: 867px) {
+			inline-size: 70%;
+			mask-image: linear-gradient(
+				90deg,
+				transparent,
+				transparent 15%,
+				black 50%
+			);
+		}
+
+		@media (max-width: 512px) {
+			position: relative;
+			inline-size: 100%;
+			mask-image: linear-gradient(0deg, transparent, transparent 15%, black 50%);
+		}
+	}
 }
 
 .wrapper {
 	inline-size: 100%;
-	container: hero / inline-size;
-	backdrop-filter: blur(48px) brightness(0.65);
-	padding-block-start: calc(var(--pf-header-height) + 2rem);
-	padding-block-end: 2rem;
+
+	&:not(.minimal) {
+		container: hero / inline-size;
+		backdrop-filter: blur(48px) brightness(0.65);
+		padding-block-start: calc(var(--pf-header-height) + 2rem);
+		padding-block-end: 2rem;
+	}
+
+	&:is(.minimal) {
+		inline-size: 93dvw;
+		display: block;
+		margin-inline: auto;
+		block-size: 80dvh;
+		position: relative;
+
+		@media (max-width: 867px) {
+			block-size: 65dvh;
+		}
+
+		@media (max-width: 512px) {
+			block-size: fit-content;
+			bottom: 3lh;
+		}
+	}
 }
 
 .details {
@@ -170,4 +220,54 @@
 	background-color: var(--pf-accent-50);
 	border-radius: var(--pf-radius);
 	overflow: hidden;
+}
+
+.heroMinimal {
+	inline-size: 50%;
+	block-size: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 1rem;
+
+	@media (max-width: 867px) {
+		inline-size: 70%;
+	}
+
+	@media (max-width: 512px) {
+		inline-size: 100%;
+	}
+
+	& > .title {
+		font-size: var(--pf-text-xl);
+		font-weight: 600;
+		line-height: 1.2;
+		text-wrap: balance;
+	}
+
+	& > .overview {
+		line-height: 1.3;
+		max-height: fit-content;
+
+		@media (max-width: 512px) {
+			max-block-size: 3lh;
+			overflow: hidden;
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 3;
+			line-clamp: 3;
+		}
+	}
+
+	.rating {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+
+		& > svg {
+			fill: var(--pf-sunflower);
+			max-inline-size: 1rem;
+			block-size: auto;
+		}
+	}
 }
