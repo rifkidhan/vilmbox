@@ -1,7 +1,13 @@
+import type { Route } from "next";
 export const TITLE_PAGE = "vilmbox";
 export const IMAGE_URL = "https://image.tmdb.org/t/p/";
 
-export const NAVIGATIONS = [
+type NavItems<T extends string = string> = {
+	title: string;
+	url: T;
+};
+
+export const NAVIGATIONS: NavItems<Route>[] = [
 	{
 		title: "Movies",
 		url: "/movie",

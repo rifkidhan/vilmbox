@@ -21,21 +21,13 @@ export const metadata: Metadata = {
 	description: "The movie database website",
 };
 
-export default function RootLayout({
-	children,
-}: Readonly<{
-	children: React.ReactNode;
-}>) {
+export default function RootLayout(props: LayoutProps<"/">) {
 	return (
 		<html lang="en" suppressHydrationWarning className={geistSans.variable}>
 			<body>
-				<ThemeProvider
-					storageKey="vilmbox:theme"
-					enableSystem
-					disableTransitionOnChange
-				>
+				<ThemeProvider storageKey="vilmbox:theme" enableSystem disableTransitionOnChange>
 					<Header />
-					<main>{children}</main>
+					<main>{props.children}</main>
 					<BackToTop />
 					<Footer />
 				</ThemeProvider>

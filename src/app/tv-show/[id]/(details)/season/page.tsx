@@ -4,12 +4,8 @@ import { formatDate, formatPlural } from "$/utils/format";
 import { Card, CardContent, CardThumbnail } from "$/components/card";
 import s from "./page.module.css";
 
-export default async function TVSeasonPage({
-	params,
-}: {
-	params: Promise<{ id: string }>;
-}) {
-	const { id } = await params;
+export default async function TVSeasonPage(props: PageProps<"/tv-show/[id]/season">) {
+	const { id } = await props.params;
 	const tv = await getTv(id);
 
 	return (
@@ -28,15 +24,10 @@ export default async function TVSeasonPage({
 							<span>{item.name}</span>
 						</h2>
 						<p>
-							{item.episode_count}{" "}
-							{formatPlural(item.episode_count, EPISODE_SUFFIXES)}
+							{item.episode_count} {formatPlural(item.episode_count, EPISODE_SUFFIXES)}
 						</p>
-						{item.air_date ? (
-							<p>Premiered on {formatDate(item.air_date)}</p>
-						) : null}
-						{item.overview ? (
-							<p className={s.overview}>{item.overview}</p>
-						) : null}
+						{item.air_date ? <p>Premiered on {formatDate(item.air_date)}</p> : null}
+						{item.overview ? <p className={s.overview}>{item.overview}</p> : null}
 					</CardContent>
 				</Card>
 			))}

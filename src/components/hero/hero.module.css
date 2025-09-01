@@ -29,12 +29,7 @@
 
 		@media (max-width: 867px) {
 			inline-size: 70%;
-			mask-image: linear-gradient(
-				90deg,
-				transparent,
-				transparent 15%,
-				black 50%
-			);
+			mask-image: linear-gradient(90deg, transparent, transparent 15%, black 50%);
 		}
 
 		@media (max-width: 512px) {
@@ -229,6 +224,7 @@
 	flex-direction: column;
 	justify-content: center;
 	gap: 1rem;
+	color: var(--pf-accent-80);
 
 	@media (max-width: 867px) {
 		inline-size: 70%;

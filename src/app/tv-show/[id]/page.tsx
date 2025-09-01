@@ -20,11 +20,7 @@ import {
 import isNull from "$/utils/isNull";
 import Button from "$/components/button";
 import { Card, CardContent, CardThumbnail } from "$/components/card";
-import {
-	Carousel,
-	CarouselButtons,
-	CarouselViewport,
-} from "$/components/carousel";
+import { Carousel, CarouselButtons, CarouselViewport } from "$/components/carousel";
 import CarouselSkeleton from "$/components/carousel/carousel-skeleton";
 import GridImages from "$/components/grid/grid-images";
 import {
@@ -44,12 +40,8 @@ import ListItem from "$/components/list-item";
 import OfficialSite from "$/components/official-site";
 import Truncate from "$/components/truncate";
 
-export async function generateMetadata({
-	params,
-}: {
-	params: Promise<{ id: string }>;
-}): Promise<Metadata> {
-	const { id } = await params;
+export async function generateMetadata(props: PageProps<"/tv-show/[id]">): Promise<Metadata> {
+	const { id } = await props.params;
 
 	const tv = await getTvDetails(id);
 
@@ -59,12 +51,8 @@ export async function generateMetadata({
 	};
 }
 
-export default async function TVDetailPage({
-	params,
-}: {
-	params: Promise<{ id: string }>;
-}) {
-	const { id } = await params;
+export default async function TVDetailPage(props: PageProps<"/tv-show/[id]">) {
+	const { id } = await props.params;
 	const tv = await getTvDetails(id);
 	const [videos, credits, images, recommendations] = await Promise.all([
 		getTvVideos(id),
@@ -84,18 +72,10 @@ export default async function TVDetailPage({
 					<HeroOverview overview={tv.overview} />
 					<HeroMisc>
 						{tv.certificate ? <span>{tv.certificate.rating}</span> : null}
-						{tv.first_air_date ? (
-							<span>{getYear(tv.first_air_date)}</span>
-						) : null}
-						{tv.episode_run_time[0] ? (
-							<span>{formatRuntime(tv.episode_run_time[0])}</span>
-						) : null}
+						{tv.first_air_date ? <span>{getYear(tv.first_air_date)}</span> : null}
+						{tv.episode_run_time[0] ? <span>{formatRuntime(tv.episode_run_time[0])}</span> : null}
 					</HeroMisc>
-					<HeroAction
-						vote_average={tv.vote_average}
-						vote_count={tv.vote_count}
-						videos={videos}
-					/>
+					<HeroAction vote_average={tv.vote_average} vote_count={tv.vote_count} videos={videos} />
 					<HeroGenres genres={tv.genres} />
 					<HeroCredits>
 						{tv.created_by.length > 0 ? (
@@ -195,12 +175,7 @@ export default async function TVDetailPage({
 					<CarouselViewport>
 						<Suspense fallback={<CarouselSkeleton />}>
 							{credits.cast.slice(0, 9).map((item) => (
-								<Card
-									key={item.id}
-									title={item.name}
-									shadow
-									url={`/people/${item.id}`}
-								>
+								<Card key={item.id} title={item.name} shadow url={`/people/${item.id}`}>
 									<CardThumbnail title={item.name} img={item.profile_path} />
 									<CardContent title={item.name}>
 										<p className="cast-role">{item.roles[0].character}</p>
@@ -225,18 +200,14 @@ export default async function TVDetailPage({
 				</h2>
 				<ul className="info-details">
 					<ListItem head="Original Title">
-						{tv.original_name && tv.original_name !== tv.name
-							? tv.original_name
-							: null}
+						{tv.original_name && tv.original_name !== tv.name ? tv.original_name : null}
 					</ListItem>
 					<ListItem head="Status">{tv.status}</ListItem>
 					<ListItem head="Total Season">
-						{tv.number_of_seasons}{" "}
-						{formatPlural(tv.number_of_seasons, SEASON_SUFFIXES)}
+						{tv.number_of_seasons} {formatPlural(tv.number_of_seasons, SEASON_SUFFIXES)}
 					</ListItem>
 					<ListItem head="Total Episode">
-						{tv.number_of_episodes}{" "}
-						{formatPlural(tv.number_of_episodes, EPISODE_SUFFIXES)}
+						{tv.number_of_episodes} {formatPlural(tv.number_of_episodes, EPISODE_SUFFIXES)}
 					</ListItem>
 					<ListItem head="First Air Date">
 						{tv.first_air_date ? formatDate(tv.first_air_date) : null}
@@ -256,31 +227,23 @@ export default async function TVDetailPage({
 					<ListItem head="Production Countries">
 						{!isNull(tv.production_countries)
 							? tv.production_countries.map((item) => (
-									<span key={item.name}>
-										{formatCountryName(item.iso_3166_1)}
-									</span>
+									<span key={item.name}>{formatCountryName(item.iso_3166_1)}</span>
 								))
 							: null}
 					</ListItem>
 					<ListItem head="Production Companies">
 						{!isNull(tv.production_companies)
-							? tv.production_companies.map((item) => (
-									<span key={item.id}>{item.name}</span>
-								))
+							? tv.production_companies.map((item) => <span key={item.id}>{item.name}</span>)
 							: null}
 					</ListItem>
 					<ListItem head="Network">
 						{!isNull(tv.networks)
-							? tv.networks.map((item) => (
-									<span key={item.id}>{item.name}</span>
-								))
+							? tv.networks.map((item) => <span key={item.id}>{item.name}</span>)
 							: null}
 					</ListItem>
 					<ListItem head="Keywords">
 						{!isNull(tv.keywords.results)
-							? tv.keywords.results.map((item) => (
-									<span key={item.id}>{item.name}</span>
-								))
+							? tv.keywords.results.map((item) => <span key={item.id}>{item.name}</span>)
 							: null}
 					</ListItem>
 				</ul>
@@ -289,11 +252,9 @@ export default async function TVDetailPage({
 				<h2 className="section-title">
 					<span>Media</span>
 				</h2>
-				{images.length > 0 ? (
-					<GridImages title={tv.name} images={images.slice(0, 10)} />
-				) : null}
+				{images.length > 0 ? <GridImages title={tv.name} images={images.slice(0, 10)} /> : null}
 				<Button asChild variant="text">
-					<Link href={`/tv/${id}/media`}>View all media</Link>
+					<Link href={`/tv-show/${id}/media`}>View all media</Link>
 				</Button>
 			</section>
 			{!isNull(recommendations) ? (
@@ -305,12 +266,7 @@ export default async function TVDetailPage({
 						<CarouselViewport>
 							<Suspense fallback={<CarouselSkeleton />}>
 								{recommendations.map((item) => (
-									<Card
-										key={item.id}
-										title={item.name}
-										url={`/tv-show/${item.id}`}
-										shadow
-									>
+									<Card key={item.id} title={item.name} url={`/tv-show/${item.id}`} shadow>
 										<CardThumbnail title={item.name} img={item.poster_path} />
 										<CardContent rating={item.vote_average} title={item.name} />
 									</Card>

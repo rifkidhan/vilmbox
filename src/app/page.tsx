@@ -5,8 +5,8 @@ import { Card, CardContent, CardThumbnail } from "$/components/card";
 import {
 	Carousel,
 	CarouselButtons,
-	CarouselViewport,
 	CarouselDotButtons,
+	CarouselViewport,
 } from "$/components/carousel";
 import CarouselSkeleton from "$/components/carousel/carousel-skeleton";
 import { Hero, HeroMinimal } from "$/components/hero";
@@ -51,17 +51,9 @@ export default async function Home() {
 					<CarouselViewport>
 						<Suspense fallback={<CarouselSkeleton />}>
 							{movies.results.map((item) => (
-								<Card
-									key={item.id}
-									title={item.title}
-									url={`/movie/${item.id}`}
-									shadow
-								>
+								<Card key={item.id} title={item.title} url={`/movie/${item.id}`} shadow>
 									<CardThumbnail title={item.title} img={item.poster_path} />
-									<CardContent
-										rating={item.vote_average}
-										title={item.title}
-									></CardContent>
+									<CardContent rating={item.vote_average} title={item.title}></CardContent>
 								</Card>
 							))}
 						</Suspense>
@@ -80,12 +72,7 @@ export default async function Home() {
 					<CarouselViewport>
 						<Suspense fallback={<CarouselSkeleton />}>
 							{tvs.results.map((item) => (
-								<Card
-									key={item.id}
-									title={item.name}
-									url={`/tv-show/${item.id}`}
-									shadow
-								>
+								<Card key={item.id} title={item.name} url={`/tv-show/${item.id}`} shadow>
 									<CardThumbnail title={item.name} img={item.poster_path} />
 									<CardContent rating={item.vote_average} title={item.name} />
 								</Card>

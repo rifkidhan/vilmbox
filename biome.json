@@ -6,7 +6,9 @@
 		"useIgnoreFile": true
 	},
 	"formatter": {
-		"indentStyle": "tab"
+		"indentStyle": "tab",
+		"lineWidth": 100,
+		"formatWithErrors": true
 	},
 	"linter": {
 		"enabled": true,
@@ -27,24 +29,15 @@
 			"quoteStyle": "double"
 		}
 	},
-	"assist": {
-		"enabled": true,
-		"actions": {
-			"source": {
-				"organizeImports": {
-					"level": "on",
-					"options": {
-						"groups": [
-							[":BUN:", ":NODE:"],
-							[":PACKAGE:", ":PACKAGE_WITH_PROTOCOL:"],
-							["$/lib/**", "$/utils/**"],
-							["$/component/**", ":PATH:", "!**/*.css"],
-							["$/**", "!**/*.css"],
-							"**/*.css"
-						]
-					}
-				}
-			}
+	"css": {
+		"formatter": {
+			"enabled": true
+		},
+		"parser": {
+			"cssModules": true
 		}
+	},
+	"assist": {
+		"enabled": false
 	}
 }

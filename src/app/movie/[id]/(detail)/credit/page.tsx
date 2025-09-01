@@ -5,12 +5,8 @@ import { getYear } from "$/utils/format";
 import { Card, CardContent, CardThumbnail } from "$/components/card";
 import { Grid, GridItem } from "$/components/grid/grid";
 
-export async function generateMetada({
-	params,
-}: {
-	params: Promise<{ id: string }>;
-}): Promise<Metadata> {
-	const { id } = await params;
+export async function generateMetada(props: PageProps<"/movie/[id]/credit">): Promise<Metadata> {
+	const { id } = await props.params;
 
 	const movie = await getMovie(id);
 
@@ -24,12 +20,8 @@ export async function generateMetada({
 	};
 }
 
-export default async function CreditMoviePage({
-	params,
-}: {
-	params: Promise<{ id: string }>;
-}) {
-	const { id } = await params;
+export default async function CreditMoviePage(props: PageProps<"/movie/[id]/credit">) {
+	const { id } = await props.params;
 	const credits = await getMovieCredits(id);
 	const crews = grouping(credits.crew, (v) => v.department ?? "crew");
 
@@ -77,10 +69,7 @@ export default async function CreditMoviePage({
 													shadow
 													className="custom-card-credit"
 												>
-													<CardThumbnail
-														title={item.name}
-														img={item.profile_path}
-													/>
+													<CardThumbnail title={item.name} img={item.profile_path} />
 													<CardContent slotted>
 														<p className="card-title">{item.name}</p>
 														<p className="card-role">{item.job}</p>

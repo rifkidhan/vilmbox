@@ -12,12 +12,8 @@ import Image from "$/components/image";
 import ListItem from "$/components/list-item";
 import OfficialSite from "$/components/official-site";
 
-export async function generateMetadata({
-	params,
-}: {
-	params: Promise<{ id: string }>;
-}): Promise<Metadata> {
-	const { id } = await params;
+export async function generateMetadata(props: PageProps<"/people/[id]">): Promise<Metadata> {
+	const { id } = await props.params;
 	const person = await getPersonDetails(id);
 
 	return {
@@ -26,12 +22,8 @@ export async function generateMetadata({
 	};
 }
 
-export default async function PersonDetailPage({
-	params,
-}: {
-	params: Promise<{ id: string }>;
-}) {
-	const { id } = await params;
+export default async function PersonDetailPage(props: PageProps<"/people/[id]">) {
+	const { id } = await props.params;
 	const person = await getPersonDetails(id);
 	const crews = isNull(person.combine_crew)
 		? undefined
@@ -64,15 +56,11 @@ export default async function PersonDetailPage({
 						) : null}
 					</ListItem>
 					<ListItem head="Died">
-						{person.deathday ? (
-							<span>{formatDate(person.deathday)}</span>
-						) : null}
+						{person.deathday ? <span>{formatDate(person.deathday)}</span> : null}
 					</ListItem>
 					<ListItem head="Also known as">
 						{!isNull(person.also_known_as)
-							? person.also_known_as.map((item, i) => (
-									<span key={i}>{item}</span>
-								))
+							? person.also_known_as.map((item, i) => <span key={i}>{item}</span>)
 							: null}
 					</ListItem>
 					<ListItem head="Official site">
@@ -114,8 +102,7 @@ export default async function PersonDetailPage({
 									<span>{role.character ? role.character : "-"}</span>
 									{role.episode_count ? (
 										<span>
-											{role.episode_count}{" "}
-											{formatPlural(role.episode_count, EPISODE_SUFFIXES)}
+											{role.episode_count} {formatPlural(role.episode_count, EPISODE_SUFFIXES)}
 										</span>
 									) : null}
 								</li>
@@ -144,10 +131,7 @@ export default async function PersonDetailPage({
 															{job.episode_count ? (
 																<span>
 																	{job.episode_count}{" "}
-																	{formatPlural(
-																		job.episode_count,
-																		EPISODE_SUFFIXES,
-																	)}
+																	{formatPlural(job.episode_count, EPISODE_SUFFIXES)}
 																</span>
 															) : null}
 														</li>
@@ -164,10 +148,7 @@ export default async function PersonDetailPage({
 	);
 }
 
-const Details = ({
-	section,
-	...props
-}: { section: string } & React.ComponentProps<"details">) => {
+const Details = ({ section, ...props }: { section: string } & React.ComponentProps<"details">) => {
 	return (
 		<details className="credit-details" {...props}>
 			<summary>

@@ -1,15 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, ResolvingMetadata } from "next";
 import { getMovie, getMovieImages, getMovieVideos } from "$/lib/tmdb";
 import { getYear } from "$/utils/format";
 import GridImages from "$/components/grid/grid-images";
 import GridVideos from "$/components/grid/grid-videos";
 
-export async function generateMetada({
-	params,
-}: {
-	params: Promise<{ id: string }>;
-}): Promise<Metadata> {
-	const { id } = await params;
+export async function generateMetada(props: PageProps<"/movie/[id]/media">): Promise<Metadata> {
+	const { id } = await props.params;
 
 	const movie = await getMovie(id);
 
@@ -23,19 +19,12 @@ export async function generateMetada({
 	};
 }
 
-export default async function MovieMediaPage({
-	params,
-}: {
-	params: Promise<{ id: string }>;
-}) {
-	const { id } = await params;
+export default async function MovieMediaPage(props: PageProps<"/movie/[id]/media">) {
+	const { id } = await props.params;
 
 	const movie = await getMovie(id);
 
-	const [images, videos] = await Promise.all([
-		getMovieImages(id),
-		getMovieVideos(id),
-	]);
+	const [images, videos] = await Promise.all([getMovieImages(id), getMovieVideos(id)]);
 
 	return (
 		<>

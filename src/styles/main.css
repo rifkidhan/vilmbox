@@ -5,31 +5,6 @@
 @import "components.css" layer(components);
 @import "./components/card.css";
 
-@keyframes circle-in-top-right {
-	from {
-		clip-path: circle(0%);
-	}
-	to {
-		clip-path: circle(150% at top right);
-	}
-}
-
-/* @media (prefers-reduced-motion: no-preference) {
-	[style*='--tag'] {
-		view-transition-name: var(--tag);
-	}
-
-	@media (width <= 1600px) {
-		::view-transition-old(theme) {
-			animation: none;
-		}
-
-		::view-transition-new(theme) {
-			animation: 2s cubic-bezier(0.25, 1, 0.3, 1) circle-in-top-right forwards;
-		}
-	}
-} */
-
 @layer base {
 	:where(html) {
 		--pf-header-height: 3rem;

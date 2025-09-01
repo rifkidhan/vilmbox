@@ -277,17 +277,12 @@ export const getMovieDetails = async (id: string, region = "US") => {
 	const data = await api<MovieDetail>({
 		endpoint: `/movie/${id}`,
 		query: {
-			append_to_response:
-				"release_dates,alternative_titles,keywords,external_ids",
+			append_to_response: "release_dates,alternative_titles,keywords,external_ids",
 		},
 	});
 
 	const { release_dates, origin_country, ...res } = data;
-	const certificate = getCertificate(
-		release_dates.results,
-		origin_country,
-		region,
-	);
+	const certificate = getCertificate(release_dates.results, origin_country, region);
 
 	return {
 		...res,
@@ -370,18 +365,13 @@ export const getTvDetails = async (id: string, region = "US") => {
 	const data = await api<TvSeriesDetail>({
 		endpoint: `/tv/${id}`,
 		query: {
-			append_to_response:
-				"alternative_titles,content_ratings,external_ids,keywords",
+			append_to_response: "alternative_titles,content_ratings,external_ids,keywords",
 		},
 	});
 
 	const { content_ratings, origin_country, ...res } = data;
 
-	const certificate = getRating(
-		content_ratings.results,
-		origin_country,
-		region,
-	);
+	const certificate = getRating(content_ratings.results, origin_country, region);
 
 	return {
 		...res,
@@ -390,10 +380,7 @@ export const getTvDetails = async (id: string, region = "US") => {
 	};
 };
 
-export const getTVSeasonDetail = async (
-	tv_id: string,
-	season_number: string,
-) => {
+export const getTVSeasonDetail = async (tv_id: string, season_number: string) => {
 	const data = await api<SeasonDetail>({
 		endpoint: `/tv/${tv_id}/season/${season_number}`,
 		query: {

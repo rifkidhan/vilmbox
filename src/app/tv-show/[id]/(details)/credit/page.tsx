@@ -6,12 +6,8 @@ import { formatPlural } from "$/utils/format";
 import { Card, CardContent, CardThumbnail } from "$/components/card";
 import { Grid, GridItem } from "$/components/grid/grid";
 
-export async function generateMetada({
-	params,
-}: {
-	params: Promise<{ id: string }>;
-}): Promise<Metadata> {
-	const { id } = await params;
+export async function generateMetada(props: PageProps<"/tv-show/[id]/credit">): Promise<Metadata> {
+	const { id } = await props.params;
 
 	const tv = await getTv(id);
 
@@ -21,12 +17,8 @@ export async function generateMetada({
 	};
 }
 
-export default async function CreditMoviePage({
-	params,
-}: {
-	params: Promise<{ id: string }>;
-}) {
-	const { id } = await params;
+export default async function CreditMoviePage(props: PageProps<"/tv-show/[id]/credit">) {
+	const { id } = await props.params;
 	const credits = await getTvCredits(id);
 	const crews = grouping(credits.crew, (v) => v.department ?? "crew");
 
@@ -74,10 +66,7 @@ export default async function CreditMoviePage({
 													shadow
 													className="custom-card-credit"
 												>
-													<CardThumbnail
-														title={item.name}
-														img={item.profile_path}
-													/>
+													<CardThumbnail title={item.name} img={item.profile_path} />
 													<CardContent slotted>
 														<p className="card-title">{item.name}</p>
 														<ul>
@@ -86,11 +75,7 @@ export default async function CreditMoviePage({
 																	<span>{job.job}</span>
 																	<span>
 																		({job.episode_count}
-																		{formatPlural(
-																			job.episode_count,
-																			EPISODE_SUFFIXES,
-																		)}
-																		)
+																		{formatPlural(job.episode_count, EPISODE_SUFFIXES)})
 																	</span>
 																</li>
 															))}

@@ -20,11 +20,7 @@ import {
 import isNull from "$/utils/isNull";
 import Button from "$/components/button";
 import { Card, CardContent, CardThumbnail } from "$/components/card";
-import {
-	Carousel,
-	CarouselButtons,
-	CarouselViewport,
-} from "$/components/carousel";
+import { Carousel, CarouselButtons, CarouselViewport } from "$/components/carousel";
 import CarouselSkeleton from "$/components/carousel/carousel-skeleton";
 import GridImages from "$/components/grid/grid-images";
 import {
@@ -42,12 +38,8 @@ import Icon from "$/components/icon";
 import ListItem from "$/components/list-item";
 import OfficialSite from "$/components/official-site";
 
-export async function generateMetadata({
-	params,
-}: {
-	params: Promise<{ id: string }>;
-}): Promise<Metadata> {
-	const { id } = await params;
+export async function generateMetadata(props: PageProps<"/movie/[id]">): Promise<Metadata> {
+	const { id } = await props.params;
 	const { region } = await getPreference();
 	const movie = await getMovieDetails(id, region);
 
@@ -60,12 +52,9 @@ export async function generateMetadata({
 		description: movie.overview,
 	};
 }
-export default async function MovieDetailPage({
-	params,
-}: {
-	params: Promise<{ id: string }>;
-}) {
-	const { id } = await params;
+
+export default async function MovieDetailPage(props: PageProps<"/movie/[id]">) {
+	const { id } = await props.params;
 	const movie = await getMovieDetails(id);
 
 	const [videos, credits, images, recommendations] = await Promise.all([
@@ -88,12 +77,8 @@ export default async function MovieDetailPage({
 					</HeroTitle>
 					<HeroOverview overview={movie.overview} />
 					<HeroMisc>
-						{movie.certificate ? (
-							<span>{movie.certificate.certificate}</span>
-						) : null}
-						{movie.release_date ? (
-							<span>{getYear(movie.release_date)}</span>
-						) : null}
+						{movie.certificate ? <span>{movie.certificate.certificate}</span> : null}
+						{movie.release_date ? <span>{getYear(movie.release_date)}</span> : null}
 						{movie.runtime ? <span>{formatRuntime(movie.runtime)}</span> : null}
 					</HeroMisc>
 					<HeroAction
@@ -133,12 +118,7 @@ export default async function MovieDetailPage({
 					<CarouselViewport>
 						<Suspense fallback={<CarouselSkeleton />}>
 							{credits.cast.slice(0, 9).map((item) => (
-								<Card
-									key={item.id}
-									title={item.name}
-									shadow
-									url={`/people/${item.id}`}
-								>
+								<Card key={item.id} title={item.name} shadow url={`/people/${item.id}`}>
 									<CardThumbnail title={item.name} img={item.profile_path} />
 									<CardContent title={item.name}>
 										<p className="cast-role">{item.character}</p>
@@ -172,9 +152,7 @@ export default async function MovieDetailPage({
 						{movie.release_date ? formatDate(movie.release_date) : null}
 					</ListItem>
 					<ListItem head="Original Language">
-						{movie.original_language
-							? formatLanguage(movie.original_language)
-							: null}
+						{movie.original_language ? formatLanguage(movie.original_language) : null}
 					</ListItem>
 					<ListItem head="Official Site">
 						<OfficialSite
@@ -187,17 +165,13 @@ export default async function MovieDetailPage({
 					<ListItem head="Production Countries">
 						{!isNull(movie.production_countries)
 							? movie.production_countries.map((item) => (
-									<span key={item.name}>
-										{formatCountryName(item.iso_3166_1)}
-									</span>
+									<span key={item.name}>{formatCountryName(item.iso_3166_1)}</span>
 								))
 							: null}
 					</ListItem>
 					<ListItem head="Production Companies">
 						{!isNull(movie.production_companies)
-							? movie.production_companies.map((item) => (
-									<span key={item.id}>{item.name}</span>
-								))
+							? movie.production_companies.map((item) => <span key={item.id}>{item.name}</span>)
 							: null}
 					</ListItem>
 					<ListItem head="Production Budget">
@@ -208,9 +182,7 @@ export default async function MovieDetailPage({
 					</ListItem>
 					<ListItem head="Keywords">
 						{!isNull(movie.keywords.keywords)
-							? movie.keywords.keywords.map((item) => (
-									<span key={item.id}>{item.name}</span>
-								))
+							? movie.keywords.keywords.map((item) => <span key={item.id}>{item.name}</span>)
 							: null}
 					</ListItem>
 				</ul>
@@ -219,9 +191,7 @@ export default async function MovieDetailPage({
 				<h2 className="section-title">
 					<span>Media</span>
 				</h2>
-				{images.length > 0 ? (
-					<GridImages title={movie.title} images={images.slice(0, 10)} />
-				) : null}
+				{images.length > 0 ? <GridImages title={movie.title} images={images.slice(0, 10)} /> : null}
 				<Button asChild variant="text">
 					<Link href={`/movie/${id}/media`}>View all media</Link>
 				</Button>
@@ -235,17 +205,9 @@ export default async function MovieDetailPage({
 						<CarouselViewport>
 							<Suspense fallback={<CarouselSkeleton />}>
 								{recommendations.map((item) => (
-									<Card
-										key={item.id}
-										title={item.title}
-										url={`/movie/${item.id}`}
-										shadow
-									>
+									<Card key={item.id} title={item.title} url={`/movie/${item.id}`} shadow>
 										<CardThumbnail title={item.title} img={item.poster_path} />
-										<CardContent
-											rating={item.vote_average}
-											title={item.title}
-										/>
+										<CardContent rating={item.vote_average} title={item.title} />
 									</Card>
 								))}
 							</Suspense>

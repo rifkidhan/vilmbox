@@ -11,12 +11,7 @@ type ModalProps = {
 	open: boolean;
 } & React.ComponentProps<"dialog">;
 
-export default function Modal({
-	title,
-	open,
-	className,
-	...props
-}: ModalProps) {
+export default function Modal({ title, open, className, ...props }: ModalProps) {
 	const ref = useRef<HTMLDialogElement | null>(null);
 
 	const onCloseCallback = useCallback(() => {
@@ -56,12 +51,7 @@ export default function Modal({
 			<div className={s.wrapper}>
 				<div className={s.top}>
 					<div className={s.title}>{title}</div>
-					<Button
-						type="button"
-						variant="ghost"
-						size="square"
-						onClick={onCloseCallback}
-					>
+					<Button type="button" variant="ghost" size="square" onClick={onCloseCallback}>
 						<Icon name="close" isHidden />
 						<span className="sr-only">Close {title ? title : ""} modal</span>
 					</Button>

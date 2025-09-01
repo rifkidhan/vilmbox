@@ -1,3 +1,4 @@
+import type { Route } from "next";
 import cn from "clsx";
 import Link from "next/link";
 import Icon from "./icon";
@@ -18,12 +19,11 @@ export const Card = ({
 	url,
 	className,
 	...props
-}: Pick<CardProps, "title" | "url" | "shadow"> &
-	React.ComponentProps<"div">) => {
+}: Pick<CardProps, "title" | "url" | "shadow"> & React.ComponentProps<"div">) => {
 	return (
 		<div className={cn("pf-card", className)} title={url && title} {...props}>
 			<div className={cn("card", { shadow: shadow })}>
-				{url ? <Link href={url} aria-label={title} draggable /> : null}
+				{url ? <Link href={url as Route} aria-label={title} draggable /> : null}
 				{props.children}
 			</div>
 		</div>

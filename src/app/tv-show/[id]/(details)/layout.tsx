@@ -3,14 +3,8 @@ import { getTv } from "$/lib/tmdb";
 import { BannerTitle, Poster } from "./banner-title";
 import { Banner, BannerHead, BannerSkeleton } from "$/components/banner";
 
-export default async function MovieDetailLayout({
-	children,
-	params,
-}: {
-	children: React.ReactNode;
-	params: Promise<{ id: string }>;
-}) {
-	const { id } = await params;
+export default async function MovieDetailLayout(props: LayoutProps<"/tv-show/[id]">) {
+	const { id } = await props.params;
 	const tv = await getTv(id);
 
 	return (
@@ -24,7 +18,7 @@ export default async function MovieDetailLayout({
 					</BannerHead>
 				</Banner>
 			</Suspense>
-			{children}
+			{props.children}
 		</>
 	);
 }

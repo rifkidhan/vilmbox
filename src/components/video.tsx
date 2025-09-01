@@ -9,7 +9,6 @@ import Modal from "./modal";
 
 export const VideoButton = ({ video }: { video: Video }) => {
 	const [open, setOpen] = useState(false);
-	console.log(open);
 
 	return (
 		<>

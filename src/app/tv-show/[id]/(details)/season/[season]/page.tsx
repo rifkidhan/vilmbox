@@ -7,21 +7,15 @@ import GridVideos from "$/components/grid/grid-videos";
 import Image from "$/components/image";
 import s from "./page.module.css";
 
-export default async function SeasonDetailPage({
-	params,
-}: {
-	params: Promise<{ id: string; season: string }>;
-}) {
-	const { id, season: season_id } = await params;
+export default async function SeasonDetailPage(props: PageProps<"/tv-show/[id]/season/[season]">) {
+	const { id, season: season_id } = await props.params;
 	const season = await getTVSeasonDetail(id, season_id);
 
 	return (
 		<>
 			{season.overview ? (
 				<section>
-					<h2 className="section-title">
-						<span>{season.overview}</span>
-					</h2>
+					<div>{season.overview}</div>
 				</section>
 			) : null}
 			<section>
@@ -46,9 +40,7 @@ export default async function SeasonDetailPage({
 												<span>{item.episode_number}.</span>
 												<span>{item.name}</span>
 											</h3>
-											{item.air_date ? (
-												<p>Premiered on {formatDate(item.air_date)}.</p>
-											) : null}
+											{item.air_date ? <p>Premiered on {formatDate(item.air_date)}.</p> : null}
 										</div>
 									</div>
 								</summary>

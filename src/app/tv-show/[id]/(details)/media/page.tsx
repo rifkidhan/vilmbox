@@ -3,12 +3,8 @@ import { getTv, getTvImages, getTvVideos } from "$/lib/tmdb";
 import GridImages from "$/components/grid/grid-images";
 import GridVideos from "$/components/grid/grid-videos";
 
-export async function generateMetada({
-	params,
-}: {
-	params: Promise<{ id: string }>;
-}): Promise<Metadata> {
-	const { id } = await params;
+export async function generateMetada(props: PageProps<"/tv-show/[id]/media">): Promise<Metadata> {
+	const { id } = await props.params;
 
 	const tv = await getTv(id);
 
@@ -18,19 +14,12 @@ export async function generateMetada({
 	};
 }
 
-export default async function MovieMediaPage({
-	params,
-}: {
-	params: Promise<{ id: string }>;
-}) {
-	const { id } = await params;
+export default async function MovieMediaPage(props: PageProps<"/people/[id]">) {
+	const { id } = await props.params;
 
 	const tv = await getTv(id);
 
-	const [images, videos] = await Promise.all([
-		getTvImages(id),
-		getTvVideos(id),
-	]);
+	const [images, videos] = await Promise.all([getTvImages(id), getTvVideos(id)]);
 
 	return (
 		<>
