@@ -3,7 +3,7 @@ import isNull from "$/utils/isNull";
 import Button from "./button";
 import Icon from "./icon";
 
-interface OfficialSiteProps extends ExternalIds {
+export interface OfficialSiteProps extends ExternalIds {
 	homepage?: string;
 }
 
@@ -51,7 +51,7 @@ export default function OfficialSite(props: OfficialSiteProps) {
 	const external_links = Object.entries(props).filter(([_, value]) => value);
 
 	return !isNull(external_links) ? (
-		<div className="official-site">
+		<div className="list-with-dot flex-wrap">
 			{external_links.map(([key, value]) => {
 				const link = getLink(key, value);
 				return (

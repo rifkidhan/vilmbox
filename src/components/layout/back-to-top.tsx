@@ -7,10 +7,7 @@ import Icon from "../icon";
 export default function BackToTop() {
 	const [visible, setVisible] = useState(false);
 
-	const onClick = useCallback(
-		() => window.scrollTo({ top: 0, behavior: "smooth" }),
-		[],
-	);
+	const onClick = useCallback(() => window.scrollTo({ top: 0, behavior: "smooth" }), []);
 
 	useEffect(() => {
 		const visibleButton = () => {
@@ -26,7 +23,7 @@ export default function BackToTop() {
 	}, []);
 
 	return visible ? (
-		<div className="back-to-top-button">
+		<div className="fixed right-[3dvw] bottom-[3dvh] z-[6]">
 			<Button type="button" size="square" title="Back to top" onClick={onClick}>
 				<Icon name="chevron-top" isHidden />
 			</Button>

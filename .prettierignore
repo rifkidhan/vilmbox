@@ -1,0 +1,21 @@
+# Directories
+.astro
+.github
+.netlify
+.vercel
+.helix
+dist
+node_modules
+public
+.next
+
+
+# Files
+pnpm-lock.yaml
+bun.lock
+
+# Formatted by Biome
+**/*.json
+**/*.js
+**/*.ts
+**/*.mjs

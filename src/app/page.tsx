@@ -1,87 +1,116 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
-import { TITLE_PAGE } from "$/lib/constants";
+import { DESCRIPTION_PAGE, TITLE_PAGE } from "$/lib/constants";
 import { getAllTrending, getMovieTrending, getTvTrending } from "$/lib/tmdb";
-import { Card, CardContent, CardThumbnail } from "$/components/card";
+import { Card, CardContent, CardSkeleton, CardThumbnail } from "$/components/card";
 import {
 	Carousel,
 	CarouselButtons,
 	CarouselDotButtons,
 	CarouselViewport,
 } from "$/components/carousel";
-import CarouselSkeleton from "$/components/carousel/carousel-skeleton";
-import { Hero, HeroMinimal } from "$/components/hero";
+import { Hero, HeroMinimal, HeroSkeleton } from "$/components/hero";
+import Section from "$/components/section";
+
+export const metadata: Metadata = {
+	description: DESCRIPTION_PAGE,
+	alternates: {
+		canonical: "/",
+	},
+	openGraph: {
+		type: "website",
+		siteName: "vilmbox",
+		url: "/",
+	},
+};
 
 export default async function Home() {
-	const [all, movies, tvs] = await Promise.all([
-		getAllTrending(),
-		getMovieTrending(),
-		getTvTrending(),
-	]);
-
-	const allTrending = all.results.slice(0, 8);
-
 	return (
 		<>
 			<h1 className="sr-only">Welcome to {TITLE_PAGE}</h1>
-			<Carousel full>
-				<CarouselViewport>
-					{allTrending.map((item, i) => (
-						<Hero key={i} backdrop_path={item.backdrop_path} minimal>
-							<HeroMinimal
-								id={item.id}
-								title={item.name ?? item.title}
-								type={item.media_type}
-								date={item.release_date ?? item.first_air_date}
-								vote_average={item.vote_average}
-								overview={item.overview}
-							/>
-						</Hero>
-					))}
-				</CarouselViewport>
-				<CarouselDotButtons length={allTrending.length} />
-			</Carousel>
-			<section>
-				<div>
-					<h2 className="section-title">
-						<span>Trending Movie</span>
-					</h2>
-					<p>Trending Movie on this Week</p>
-				</div>
-				<Carousel>
-					<CarouselViewport>
-						<Suspense fallback={<CarouselSkeleton />}>
-							{movies.results.map((item) => (
-								<Card key={item.id} title={item.title} url={`/movie/${item.id}`} shadow>
-									<CardThumbnail title={item.title} img={item.poster_path} />
-									<CardContent rating={item.vote_average} title={item.title}></CardContent>
-								</Card>
-							))}
-						</Suspense>
-					</CarouselViewport>
-					<CarouselButtons />
-				</Carousel>
-			</section>
-			<section>
-				<div>
-					<h2 className="section-title">
-						<span>Trending TV series</span>
-					</h2>
-					<p>Trending TV series on this Week</p>
-				</div>
-				<Carousel>
-					<CarouselViewport>
-						<Suspense fallback={<CarouselSkeleton />}>
-							{tvs.results.map((item) => (
-								<Card key={item.id} title={item.name} url={`/tv-show/${item.id}`} shadow>
-									<CardThumbnail title={item.name} img={item.poster_path} />
-									<CardContent rating={item.vote_average} title={item.name} />
-								</Card>
-							))}
-						</Suspense>
-					</CarouselViewport>
-					<CarouselButtons />
-				</Carousel>
-			</section>
+			<Suspense fallback={<HeroSkeleton type="minimal" />}>
+				<AllTrending />
+			</Suspense>
+			<MovieTrending />
+			<TvTrending />
 		</>
 	);
 }
+
+const AllTrending = async () => {
+	const getTrending = await getAllTrending();
+	const trendings = getTrending.results.slice(0, 8);
+	return (
+		<Carousel full>
+			<CarouselViewport>
+				{trendings.map((item, i) => (
+					<Hero key={i} backdrop_path={item.backdrop_path} minimal>
+						<HeroMinimal
+							id={item.id}
+							name={item.title ?? item.name}
+							type={item.media_type}
+							date={item.release_date ?? item.first_air_date}
+							vote_average={item.vote_average}
+							overview={item.overview}
+						/>
+					</Hero>
+				))}
+			</CarouselViewport>
+			<CarouselDotButtons length={trendings.length} />
+		</Carousel>
+	);
+};
+
+const MovieTrending = async () => {
+	const movies = await getMovieTrending();
+	return (
+		<Section name="Trending Movie" subtitle="Trending movie on this week.">
+			<Carousel>
+				<CarouselViewport>
+					<Suspense
+						fallback={Array(8)
+							.fill(0)
+							.map((_, i) => (
+								<CardSkeleton key={i} />
+							))}
+					>
+						{movies.results.map((item) => (
+							<Card key={item.id} title={item.title} shadow url={`/movie/${item.id}`}>
+								<CardThumbnail title={item.title} img={item.poster_path} />
+								<CardContent rating={item.vote_average} title={item.title}></CardContent>
+							</Card>
+						))}
+					</Suspense>
+				</CarouselViewport>
+				<CarouselButtons />
+			</Carousel>
+		</Section>
+	);
+};
+
+const TvTrending = async () => {
+	const tv = await getTvTrending();
+	return (
+		<Section name="Trending TV Show" subtitle="Trending tv show on this week.">
+			<Carousel>
+				<CarouselViewport>
+					<Suspense
+						fallback={Array(8)
+							.fill(0)
+							.map((_, i) => (
+								<CardSkeleton key={i} />
+							))}
+					>
+						{tv.results.map((item) => (
+							<Card key={item.id} title={item.name} shadow url={`/tv-show/${item.id}`}>
+								<CardThumbnail title={item.name} img={item.poster_path} />
+								<CardContent rating={item.vote_average} title={item.name}></CardContent>
+							</Card>
+						))}
+					</Suspense>
+				</CarouselViewport>
+				<CarouselButtons />
+			</Carousel>
+		</Section>
+	);
+};

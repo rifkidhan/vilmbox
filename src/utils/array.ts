@@ -14,6 +14,7 @@ export const groupBy = <V, K>(list: V[], get: (input: V) => K) => {
 
 	return mapping;
 };
+
 export const grouping = <V, K>(list: V[], get: (input: V) => K) => {
 	const mapping = new Map<K, Array<V>>();
 

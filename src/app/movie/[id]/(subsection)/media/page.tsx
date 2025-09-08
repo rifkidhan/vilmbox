@@ -1,0 +1,46 @@
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import { getMovieImages, getMovieVideos } from "$/lib/tmdb";
+import GridImages from "$/components/grid/grid-images";
+import GridSkeleton from "$/components/grid/grid-skeleton";
+import GridVideos from "$/components/grid/grid-videos";
+import Section from "$/components/section";
+
+export const metadata: Metadata = {
+	title: "Media",
+};
+
+export default async function MovieMediaPage(props: PageProps<"/movie/[id]/media">) {
+	const { id } = await props.params;
+
+	return (
+		<>
+			<MovieImages id={id} />
+			<MovieVideos id={id} />
+		</>
+	);
+}
+
+const MovieImages = async (props: { id: string }) => {
+	const images = await getMovieImages(props.id);
+
+	return (
+		<Section name="Images">
+			<Suspense fallback={<GridSkeleton />}>
+				<GridImages images={images} />
+			</Suspense>
+		</Section>
+	);
+};
+
+const MovieVideos = async (props: { id: string }) => {
+	const videos = await getMovieVideos(props.id);
+
+	return (
+		<Section name="Videos">
+			<Suspense fallback={<GridSkeleton />}>
+				<GridVideos videos={videos} />
+			</Suspense>
+		</Section>
+	);
+};

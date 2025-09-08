@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
 	return {
-		name: "pelem",
-		short_name: "pelem",
-		theme_color: "#06d0bf",
+		name: "vilmbox",
+		short_name: "vilmbox",
+		theme_color: "#09090b",
 		background_color: "#fafafa",
 		display: "standalone",
 		description: "Discover movies and TV show.",

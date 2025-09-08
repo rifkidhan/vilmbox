@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+:root {
+	--vb-primary-light: oklch(80.42% 0.1286 186.56);
+	--vb-primary-dark: oklch(44.96% 0.0783 185.2);
+
+	--vb-accent-5: oklch(98.48% 0 0);
+	--vb-accent-10: oklch(96.75% 0.0014 286.37);
+	--vb-accent-20: oklch(91.97% 0.004 286.32);
+	--vb-accent-30: oklch(87.16% 0.0056 286.28);
+	--vb-accent-40: oklch(71.19% 0.0129 286.07);
+	--vb-accent-50: oklch(55.19% 0.0137 285.94);
+	--vb-accent-60: oklch(44.17% 0.0146 285.79);
+	--vb-accent-70: oklch(37.05% 0.012 285.8);
+	--vb-accent-80: oklch(27.41% 0.0055 286.03);
+	--vb-accent-90: oklch(21.03% 0.0059 285.88);
+	--vb-accent-95: oklch(14.05% 0.0044 285.82);
+}
+
+[data-theme="dark"] {
+	--vb-primary-light: oklch(44.96% 0.0783 185.2);
+	--vb-primary-dark: oklch(80.42% 0.1286 186.56);
+
+	--vb-accent-5: oklch(14.05% 0.0044 285.82);
+	--vb-accent-10: oklch(21.03% 0.0059 285.88);
+	--vb-accent-20: oklch(27.41% 0.0055 286.03);
+	--vb-accent-30: oklch(37.05% 0.012 285.8);
+	--vb-accent-40: oklch(44.17% 0.0146 285.79);
+	--vb-accent-50: oklch(55.19% 0.0137 285.94);
+	--vb-accent-60: oklch(71.19% 0.0129 286.07);
+	--vb-accent-70: oklch(87.16% 0.0056 286.28);
+	--vb-accent-80: oklch(91.97% 0.004 286.32);
+	--vb-accent-90: oklch(96.75% 0.0014 286.37);
+	--vb-accent-95: oklch(98.48% 0 0);
+}
+
+@theme inline {
+	--font-sans: var(--geist-sans);
+	--color-primary-light: var(--vb-primary-light);
+	--color-primary-dark: var(--vb-primary-dark);
+
+	--color-accent-5: var(--vb-accent-5);
+	--color-accent-10: var(--vb-accent-10);
+	--color-accent-20: var(--vb-accent-20);
+	--color-accent-30: var(--vb-accent-30);
+	--color-accent-40: var(--vb-accent-40);
+	--color-accent-50: var(--vb-accent-50);
+	--color-accent-60: var(--vb-accent-60);
+	--color-accent-70: var(--vb-accent-70);
+	--color-accent-80: var(--vb-accent-80);
+	--color-accent-90: var(--vb-accent-90);
+	--color-accent-95: var(--vb-accent-95);
+}
+
+@theme {
+	/* color */
+	--color-primary: oklch(77.06% 0.135446 184.5997);
+	--color-sunflower: oklch(88.63% 0.1843 107.6);
+	--color-white: oklch(98.48% 0 0);
+	--color-black: oklch(14.05% 0.0044 285.82);
+
+	/* font-size */
+	--text-vb-display: clamp(3.5rem, 0.75rem + 5vw, 4.5rem);
+	--text-vb-xl: clamp(2.25rem, 0.75rem + 3vw, 3.5rem);
+	--text-vb-lg: clamp(1.5rem, 0.25rem + 2vw, 2.25rem);
+	--text-vb-md: clamp(1.125rem, 0.25rem + 1.7vw, 1.5rem);
+	--text-vb-normal: clamp(0.875rem, 0.15rem + 2vw, 1.125rem);
+	--text-vb-sm: clamp(0.75rem, 0.12rem + 2vw, 0.875rem);
+}
+
+@custom-variant dark {
+	&:where([data-theme="dark"], [data-theme="dark"] *) {
+		@slot;
+	}
+}
+
+@layer base {
+	:where(html) {
+		@supports (scrollbar-width: auto) {
+			scrollbar-width: thin;
+			scrollbar-color: var(--color-primary) transparent;
+			scrollbar-gutter: stable;
+		}
+
+		interpolate-size: allow-keywords;
+	}
+	:where([popover]):not(dialog) {
+		inset: unset;
+	}
+}
+
+@layer components {
+	:where(.highlight) {
+		&::before {
+			content: "";
+			inline-size: 100%;
+			block-size: 0.5em;
+			position: absolute;
+			bottom: 0;
+			background-color: var(--color-primary);
+			z-index: -1;
+			clip-path: inset(0 100% 0 0);
+			transition: clip-path 200ms ease-in-out;
+		}
+
+		@variant hover {
+			&::before {
+				clip-path: inset(0 0% 0 0);
+			}
+		}
+	}
+
+	:where(.progress) {
+		&[value]::-webkit-progress-bar {
+			background-color: var(--color-accent-10);
+		}
+
+		&[value]::-webkit-progress-value,
+		&[value]::-moz-progress-bar {
+			background-color: var(--color-primary);
+		}
+	}
+
+	.list-with-dot {
+		display: flex;
+		flex-direction: row;
+
+		& > :not(:last-child)::after {
+			content: "•";
+			margin-inline: --spacing(1);
+
+			@variant md {
+				margin-inline: --spacing(2);
+			}
+		}
+	}
+}
+
+@utility scrollbar {
+	@supports (scrollbar-width: auto) {
+		scrollbar-width: thin;
+		scrollbar-color: var(--color-primary) transparent;
+		scrollbar-gutter: stable;
+	}
+}

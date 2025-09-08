@@ -19,7 +19,7 @@ export const formatRuntime = (time: number) => {
 
 export const formatDate = (time: string) => {
 	const date = new Date(time);
-	const dateTime = new Intl.DateTimeFormat(undefined, {
+	const dateTime = new Intl.DateTimeFormat("en-GB", {
 		dateStyle: "long",
 	});
 
@@ -52,10 +52,7 @@ export const formatLanguage = (lang: string) => {
  * format plural using cardinal format
  * suffixes key is 'one' and 'other'
  */
-export const formatPlural = (
-	length: number,
-	suffixes: Record<string, string>,
-) => {
+export const formatPlural = (length: number, suffixes: Record<string, string>) => {
 	const rule = new Intl.PluralRules("en-US").select(length);
 	const suffix = suffixes[rule];
 

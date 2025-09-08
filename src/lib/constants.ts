@@ -1,5 +1,7 @@
 import type { Route } from "next";
+
 export const TITLE_PAGE = "vilmbox";
+export const DESCRIPTION_PAGE = "The movie and tv show database website";
 export const IMAGE_URL = "https://image.tmdb.org/t/p/";
 
 type NavItems<T extends string = string> = {

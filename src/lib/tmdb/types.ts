@@ -136,8 +136,7 @@ export interface BaseImage {
 	iso_639_1?: string;
 }
 
-interface SimplePerson
-	extends Pick<PersonType, "id" | "name" | "profile_path"> {
+interface SimplePerson extends Pick<PersonType, "id" | "name" | "profile_path"> {
 	credit_id?: string;
 	gender: number;
 }
@@ -156,8 +155,7 @@ interface Crew extends Omit<Cast, "cast_id" | "character"> {
 	job?: string;
 }
 
-interface AggregateCast
-	extends Omit<Cast, "credit_id" | "cast_id" | "character"> {
+interface AggregateCast extends Omit<Cast, "credit_id" | "cast_id" | "character"> {
 	roles: { credit_id?: string; character?: string; episode_count: number }[];
 	total_episode_count: number;
 }
@@ -259,8 +257,7 @@ export interface PersonPopular extends PaginationResult {
 	results: Omit<PersonType, "media_type">[];
 }
 
-export interface MovieDetail
-	extends Omit<MovieType, "genre_ids" | "media_type"> {
+export interface MovieDetail extends Omit<MovieType, "genre_ids" | "media_type"> {
 	belongs_to_collection?: BelongCollection;
 	budget: number;
 	genres: Genre[];
@@ -317,8 +314,7 @@ export interface MovieDetail
 	};
 }
 
-export interface TvSeriesDetail
-	extends Omit<TvType, "genre_ids" | "adult" | "media_type"> {
+export interface TvSeriesDetail extends Omit<TvType, "genre_ids" | "adult" | "media_type"> {
 	created_by: SimplePerson[];
 	episode_run_time: number[];
 	genres: Genre[];
@@ -410,8 +406,7 @@ export type CombineCrew = Omit<CombineCast, "character" | "roles"> & {
 	}[];
 };
 
-export interface PersonDetail
-	extends Omit<PersonType, "media_type" | "known_for"> {
+export interface PersonDetail extends Omit<PersonType, "media_type" | "known_for"> {
 	birthday?: string;
 	deathday?: string;
 	also_known_as: string[];

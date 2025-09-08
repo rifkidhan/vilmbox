@@ -13,13 +13,7 @@ export default function ThemeTogle() {
 	}, [setTheme, resolvedTheme]);
 
 	return (
-		<Button
-			type="button"
-			size="square"
-			title="Toggle Theme"
-			variant="ghost"
-			onClick={themeToggle}
-		>
+		<Button type="button" size="square" title="Toggle Theme" variant="ghost" onClick={themeToggle}>
 			<Icon name="theme" isHidden />
 		</Button>
 	);

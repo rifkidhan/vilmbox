@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
-import { EPISODE_SUFFIXES, SEASON_SUFFIXES } from "$/lib/constants";
+import { EPISODE_SUFFIXES, IMAGE_URL, SEASON_SUFFIXES } from "$/lib/constants";
 import {
+	getPreference,
 	getTvCredits,
 	getTvDetails,
 	getTvImages,
 	getTvRecommendations,
-	getTvVideos,
 } from "$/lib/tmdb";
 import {
 	formatCountryName,
@@ -19,84 +19,82 @@ import {
 } from "$/utils/format";
 import isNull from "$/utils/isNull";
 import Button from "$/components/button";
-import { Card, CardContent, CardThumbnail } from "$/components/card";
+import { Card, CardContent, CardSkeleton, CardThumbnail } from "$/components/card";
 import { Carousel, CarouselButtons, CarouselViewport } from "$/components/carousel";
-import CarouselSkeleton from "$/components/carousel/carousel-skeleton";
 import GridImages from "$/components/grid/grid-images";
 import {
 	Hero,
 	HeroAction,
-	HeroCredits,
+	HeroContent,
 	HeroGenres,
 	HeroMisc,
 	HeroOverview,
 	HeroPoster,
 	HeroSkeleton,
 	HeroTitle,
+	HeroWrapper,
 } from "$/components/hero";
 import Icon from "$/components/icon";
 import Image from "$/components/image";
 import ListItem from "$/components/list-item";
 import OfficialSite from "$/components/official-site";
-import Truncate from "$/components/truncate";
+import Section from "$/components/section";
 
-export async function generateMetadata(props: PageProps<"/tv-show/[id]">): Promise<Metadata> {
+export const generateMetadata = async (props: PageProps<"/tv-show/[id]">): Promise<Metadata> => {
 	const { id } = await props.params;
-
-	const tv = await getTvDetails(id);
+	const { region } = await getPreference();
+	const tv = await getTvDetails(id, region);
 
 	return {
-		title: tv.name ? tv.name : "Untitled",
-		description: tv.overview,
+		title: tv.name
+			? tv.first_air_date
+				? `${tv.name} (${getYear(tv.first_air_date)})`
+				: tv.name
+			: "untitled",
+		alternates: {
+			canonical: `/tv-show/${id}`,
+		},
+		openGraph: {
+			type: "website",
+			siteName: "vilmbox",
+			url: `/tv-show/${id}`,
+			images: tv.poster_path ? `${IMAGE_URL}w342${tv.poster_path}` : undefined,
+		},
 	};
-}
+};
 
-export default async function TVDetailPage(props: PageProps<"/tv-show/[id]">) {
+export default async function TvPage(props: PageProps<"/tv-show/[id]">) {
 	const { id } = await props.params;
-	const tv = await getTvDetails(id);
-	const [videos, credits, images, recommendations] = await Promise.all([
-		getTvVideos(id),
-		getTvCredits(id),
-		getTvImages(id),
-		getTvRecommendations(id),
-	]);
+	const { region } = await getPreference();
+	const tv = await getTvDetails(id, region);
 
 	return (
 		<>
 			<Suspense fallback={<HeroSkeleton />}>
 				<Hero backdrop_path={tv.backdrop_path}>
-					<HeroPoster poster_path={tv.poster_path} title={tv.name} />
-					<HeroTitle tagline={tv.tagline}>
-						<h1>{tv.name}</h1>
-					</HeroTitle>
-					<HeroOverview overview={tv.overview} />
-					<HeroMisc>
-						{tv.certificate ? <span>{tv.certificate.rating}</span> : null}
-						{tv.first_air_date ? <span>{getYear(tv.first_air_date)}</span> : null}
-						{tv.episode_run_time[0] ? <span>{formatRuntime(tv.episode_run_time[0])}</span> : null}
-					</HeroMisc>
-					<HeroAction vote_average={tv.vote_average} vote_count={tv.vote_count} videos={videos} />
-					<HeroGenres genres={tv.genres} />
-					<HeroCredits>
-						{tv.created_by.length > 0 ? (
-							<div className="creators">
-								<span>Creators</span>
-								<div className="list-with-dot">
-									{tv.created_by.map((item, i) => (
-										<span key={i}>{item.name}</span>
-									))}
-								</div>
-							</div>
-						) : null}
-					</HeroCredits>
+					<HeroWrapper>
+						<HeroPoster poster_path={tv.poster_path} title={tv.name} />
+						<HeroContent>
+							<HeroTitle title={tv.name} tagline={tv.tagline} />
+							<HeroMisc>
+								{tv.certificate ? <li>{tv.certificate.rating}</li> : null}
+								{tv.first_air_date ? <li>{getYear(tv.first_air_date)}</li> : null}
+								{tv.episode_run_time[0] ? <li>{formatRuntime(tv.episode_run_time[0])}</li> : null}
+							</HeroMisc>
+							<HeroGenres genres={tv.genres} />
+							<HeroAction
+								vote_average={tv.vote_average}
+								vote_count={tv.vote_count}
+								videos={tv.videos.results}
+							/>
+
+							<HeroOverview overview={tv.overview} />
+						</HeroContent>
+					</HeroWrapper>
 				</Hero>
 			</Suspense>
-
-			<section>
-				<h2 className="section-title">
-					<span>Episodes</span>
-				</h2>
-				<div className="episodes">
+			<Section name="Episodes">
+				<div className="flex flex-col gap-4 xl:flex-row">
 					{tv.next_episode_to_air ? (
 						<Card shadow title={tv.next_episode_to_air.name}>
 							{tv.next_episode_to_air.still_path ? (
@@ -108,23 +106,25 @@ export default async function TVDetailPage(props: PageProps<"/tv-show/[id]">) {
 									/>
 								</CardThumbnail>
 							) : null}
-							<CardContent slotted className="content">
-								<h3 className="episode-section">Next Episode</h3>
-								<hgroup>
-									<h4 className="title">
+							<CardContent slotted>
+								<h3 className="text-vb-md font-semibold">Upcoming Episode</h3>
+								<hgroup className="leading-none text-accent-80">
+									<h4 className="flex gap-2">
 										<span>
 											S{tv.next_episode_to_air.season_number}:E
 											{tv.next_episode_to_air.episode_number}
 										</span>
-										<span>{tv.next_episode_to_air.name}</span>
+										<span className="font-medium">{tv.next_episode_to_air.name}</span>
 									</h4>
-									<p className="date">
+									<p className="text-vb-sm">
 										{tv.next_episode_to_air.air_date
 											? formatDate(tv.next_episode_to_air.air_date)
 											: null}
 									</p>
 								</hgroup>
-								<Truncate>{tv.next_episode_to_air.overview}</Truncate>
+								<div className="line-clamp-2 text-vb-sm text-accent-70">
+									{tv.next_episode_to_air.overview}
+								</div>
 							</CardContent>
 						</Card>
 					) : null}
@@ -139,66 +139,36 @@ export default async function TVDetailPage(props: PageProps<"/tv-show/[id]">) {
 									/>
 								</CardThumbnail>
 							) : null}
-							<CardContent slotted className="content">
-								<h3 className="episode-section">Last Episode To Air</h3>
-								<hgroup>
-									<h4 className="title">
+							<CardContent slotted>
+								<h3 className="text-vb-md font-semibold">Last Episode To Air</h3>
+								<hgroup className="leading-none text-accent-80">
+									<h4 className="flex gap-2">
 										<span>
 											S{tv.last_episode_to_air.season_number}:E
 											{tv.last_episode_to_air.episode_number}
 										</span>
-										<span>{tv.last_episode_to_air.name}</span>
+										<span className="font-medium">{tv.last_episode_to_air.name}</span>
 									</h4>
-									<p className="date">
+									<p className="text-vb-sm">
 										{tv.last_episode_to_air.air_date
 											? formatDate(tv.last_episode_to_air.air_date)
 											: null}
 									</p>
 								</hgroup>
-								<Truncate>{tv.last_episode_to_air.overview}</Truncate>
+								<div className="line-clamp-2 text-vb-sm text-accent-70">
+									{tv.last_episode_to_air.overview}
+								</div>
 							</CardContent>
 						</Card>
 					) : null}
 				</div>
-				<div>
-					<Button asChild variant="text">
-						<Link href={`/tv-show/${tv.id}/season`}>View all seasons</Link>
-					</Button>
-				</div>
-			</section>
-
-			<section>
-				<h2 className="section-title">
-					<span>Cast</span>
-				</h2>
-				<Carousel>
-					<CarouselViewport>
-						<Suspense fallback={<CarouselSkeleton />}>
-							{credits.cast.slice(0, 9).map((item) => (
-								<Card key={item.id} title={item.name} shadow url={`/people/${item.id}`}>
-									<CardThumbnail title={item.name} img={item.profile_path} />
-									<CardContent title={item.name}>
-										<p className="cast-role">{item.roles[0].character}</p>
-									</CardContent>
-								</Card>
-							))}
-							<div className="view-more-card">
-								<Link href={`/movie/${id}/credit`}>
-									<Icon name="arrow-right" isHidden size={36} />
-									<span>View more</span>
-								</Link>
-							</div>
-						</Suspense>
-					</CarouselViewport>
-					<CarouselButtons />
-				</Carousel>
-			</section>
-
-			<section>
-				<h2 className="section-title">
-					<span>Details</span>
-				</h2>
-				<ul className="info-details">
+				<Button asChild variant="text">
+					<Link href={`/tv-show/${id}/season`}>View all season</Link>
+				</Button>
+			</Section>
+			<CastCarousel id={id} />
+			<Section name="Details">
+				<ul className="flex flex-col gap-4">
 					<ListItem head="Original Title">
 						{tv.original_name && tv.original_name !== tv.name ? tv.original_name : null}
 					</ListItem>
@@ -247,36 +217,101 @@ export default async function TVDetailPage(props: PageProps<"/tv-show/[id]">) {
 							: null}
 					</ListItem>
 				</ul>
-			</section>
-			<section>
-				<h2 className="section-title">
-					<span>Media</span>
-				</h2>
-				{images.length > 0 ? <GridImages title={tv.name} images={images.slice(0, 10)} /> : null}
-				<Button asChild variant="text">
-					<Link href={`/tv-show/${id}/media`}>View all media</Link>
-				</Button>
-			</section>
-			{!isNull(recommendations) ? (
-				<section>
-					<h2 className="section-title">
-						<span>Recommendations</span>
-					</h2>
-					<Carousel>
-						<CarouselViewport>
-							<Suspense fallback={<CarouselSkeleton />}>
-								{recommendations.map((item) => (
-									<Card key={item.id} title={item.name} url={`/tv-show/${item.id}`} shadow>
-										<CardThumbnail title={item.name} img={item.poster_path} />
-										<CardContent rating={item.vote_average} title={item.name} />
-									</Card>
-								))}
-							</Suspense>
-						</CarouselViewport>
-						<CarouselButtons />
-					</Carousel>
-				</section>
-			) : null}
+			</Section>
+			<TvImages id={id} />
+			<Recommendation id={id} />
 		</>
 	);
 }
+
+const CastCarousel = async (props: { id: string }) => {
+	const casts = await getTvCredits(props.id);
+	return (
+		<Section name="Cast">
+			<Carousel>
+				<CarouselViewport>
+					<Suspense
+						fallback={Array(8)
+							.fill(0)
+							.map((_, i) => (
+								<CardSkeleton key={i} />
+							))}
+					>
+						{casts.cast.slice(0, 9).map((item) => (
+							<Card key={item.id} title={item.name} url={`/people/${item.id}`} shadow>
+								<CardThumbnail title={item.name} img={item.profile_path} />
+								<CardContent title={item.name}>
+									<div className="flex flex-col text-vb-sm text-accent-70">
+										<span>{item.roles[0].character}</span>
+										<span className="text-accent-60">
+											{item.total_episode_count}{" "}
+											{formatPlural(item.total_episode_count, EPISODE_SUFFIXES)}
+										</span>
+									</div>
+								</CardContent>
+							</Card>
+						))}
+						<div className="group block rounded-xl shadow-lg shadow-black/30 transition-shadow select-none hover:shadow-xl">
+							<Link
+								href={`/tv-show/${props.id}/credits`}
+								className="flex size-full flex-col items-center-safe justify-center-safe"
+							>
+								<Icon
+									name="arrow-right"
+									isHidden
+									size={36}
+									className="transition-transform group-hover:translate-x-1"
+								/>
+								<span className="group-hover:underline">View more</span>
+							</Link>
+						</div>
+					</Suspense>
+				</CarouselViewport>
+				<CarouselButtons />
+			</Carousel>
+		</Section>
+	);
+};
+
+const TvImages = async (props: { id: string }) => {
+	const images = await getTvImages(props.id);
+
+	return (
+		<Section name="Media">
+			<Suspense fallback={null}>
+				<GridImages images={images.slice(0, 10)} />
+			</Suspense>
+			<Button asChild variant="text">
+				<Link href={`/tv-show/${props.id}/media`}>View all media</Link>
+			</Button>
+		</Section>
+	);
+};
+
+const Recommendation = async (props: { id: string }) => {
+	const recommendations = await getTvRecommendations(props.id);
+
+	return (
+		<Section name="Recommendations">
+			<Carousel>
+				<CarouselViewport>
+					<Suspense
+						fallback={Array(8)
+							.fill(0)
+							.map((_, i) => (
+								<CardSkeleton key={i} />
+							))}
+					>
+						{recommendations.map((item) => (
+							<Card key={item.id} title={item.name} shadow url={`/tv-show/${item.id}`}>
+								<CardThumbnail title={item.name} img={item.poster_path} />
+								<CardContent rating={item.vote_average} title={item.name}></CardContent>
+							</Card>
+						))}
+					</Suspense>
+				</CarouselViewport>
+				<CarouselButtons />
+			</Carousel>
+		</Section>
+	);
+};
