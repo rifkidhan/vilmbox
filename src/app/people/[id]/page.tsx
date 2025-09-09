@@ -1,5 +1,4 @@
 import type { Metadata, Route } from "next";
-import Link from "next/link";
 import { Suspense } from "react";
 import { EPISODE_SUFFIXES } from "$/lib/constants";
 import { getPersonDetails } from "$/lib/tmdb";
@@ -18,6 +17,7 @@ import {
 } from "$/components/hero";
 import Icon from "$/components/icon";
 import Image from "$/components/image";
+import Link from "$/components/link";
 import ListItem from "$/components/list-item";
 import OfficialSite from "$/components/official-site";
 import Section from "$/components/section";
@@ -235,7 +235,7 @@ const DetailsItem = ({
 			</div>
 			<div className="flex w-full flex-col gap-2">
 				<h4 className="font-semibold group-hover/item:underline">{name}</h4>
-				<ul className="ml-2 list-inside list-disc text-vb-sm text-accent-70">{children}</ul>
+				<ul className="ml-2 text-vb-sm text-accent-70">{children}</ul>
 			</div>
 			<div className="shrink-0 text-primary-dark">{date ? getYear(date) : "-"}</div>
 		</li>

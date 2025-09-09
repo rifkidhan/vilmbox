@@ -20,6 +20,11 @@ const nextConfig: NextConfig = {
 	experimental: {
 		useCache: true,
 	},
+	logging: {
+		fetches: {
+			fullUrl: true,
+		},
+	},
 };
 
 export default nextConfig;

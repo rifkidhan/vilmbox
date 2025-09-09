@@ -36,8 +36,10 @@ export const ModalContent = ({
 					aria-describedby={undefined}
 				>
 					<div className="relative flex flex-col gap-4 overflow-hidden rounded-xl bg-accent-10 p-4">
-						<div className="flex flex-row items-center justify-between gap-4">
-							<DialogTitle className="font-semibold">{title}</DialogTitle>
+						<div className="flex flex-row items-center justify-between gap-2 md:gap-4">
+							<DialogTitle className="line-clamp-2 max-w-[22ch] font-semibold md:max-w-[32ch] lg:max-w-[50ch]">
+								{title}
+							</DialogTitle>
 							<DialogClose asChild>
 								<Button type="button" variant="ghost" size="square" className="shrink-0">
 									<Icon name="close" isHidden />

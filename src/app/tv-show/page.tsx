@@ -1,31 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Suspense } from "react";
-import {
-	getPreference,
-	getTvDetails,
-	getTvPopular,
-	getTvTopRated,
-	getTvTrending,
-} from "$/lib/tmdb";
+import { getTvPopular, getTvTopRated, getTvTrending } from "$/lib/tmdb";
 import { randomize } from "$/utils/array";
-import { formatRuntime, getYear } from "$/utils/format";
-import Button from "$/components/button";
 import { Card, CardContent, CardSkeleton, CardThumbnail } from "$/components/card";
 import { Carousel, CarouselButtons, CarouselViewport } from "$/components/carousel";
-import {
-	Hero,
-	HeroAction,
-	HeroContent,
-	HeroGenres,
-	HeroMisc,
-	HeroOverview,
-	HeroPoster,
-	HeroSkeleton,
-	HeroTitle,
-	HeroWrapper,
-} from "$/components/hero";
-import Icon from "$/components/icon";
+import { Hero, HeroMinimal, HeroSkeleton } from "$/components/hero";
 import Section from "$/components/section";
 
 export const metadata: Metadata = {
@@ -42,42 +21,21 @@ export const metadata: Metadata = {
 };
 
 export default async function TVPage() {
-	const { region } = await getPreference();
 	const trending = await getTvTrending("day");
-	const randomTv = await getTvDetails(`${randomize(trending.results).id}`, region);
+	const randomTv = randomize(trending.results);
 
 	return (
 		<>
 			<Suspense fallback={<HeroSkeleton />}>
-				<Hero backdrop_path={randomTv.backdrop_path}>
-					<HeroWrapper>
-						<HeroPoster poster_path={randomTv.poster_path} title={randomTv.name} />
-						<HeroContent>
-							<HeroTitle title={randomTv.name} tagline={randomTv.tagline} />
-							<HeroMisc>
-								{randomTv.certificate ? <li>{randomTv.certificate.rating}</li> : null}
-								{randomTv.first_air_date ? <li>{getYear(randomTv.first_air_date)}</li> : null}
-								{randomTv.episode_run_time[0] ? (
-									<li>{formatRuntime(randomTv.episode_run_time[0])}</li>
-								) : null}
-							</HeroMisc>
-							<HeroGenres genres={randomTv.genres} />
-							<HeroAction
-								vote_average={randomTv.vote_average}
-								vote_count={randomTv.vote_count}
-								videos={randomTv.videos.results}
-							/>
-
-							<HeroOverview overview={randomTv.overview} />
-
-							<Button asChild variant="theme" size="lg" className="w-full">
-								<Link href={`/tv-show/${randomTv.id}`}>
-									<span>Go to {randomTv.name}</span>
-									<Icon name="arrow-right" isHidden />
-								</Link>
-							</Button>
-						</HeroContent>
-					</HeroWrapper>
+				<Hero backdrop_path={randomTv.backdrop_path} minimal>
+					<HeroMinimal
+						id={randomTv.id}
+						name={randomTv.name}
+						type={randomTv.media_type}
+						date={randomTv.first_air_date}
+						vote_average={randomTv.vote_average}
+						overview={randomTv.overview}
+					/>
 				</Hero>
 			</Suspense>
 			<Section name="Trending" subtitle="Trending tv show on this day.">

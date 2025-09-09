@@ -25,13 +25,13 @@ export default function Button({
 			"bg-primary-dark text-accent-10 hover:bg-[color-mix(in_oklab,var(--color-primary-dark),var(--color-accent-90)_30%)]",
 	}[variant];
 	const sizeClass = {
-		sm: "not-[&.is-text]:h-8 not-[&.is-text]:px-3",
-		md: "not-[&.is-text]:h-9 not-[&.is-text]:px-4 not-[&.is-text]:py-2",
-		lg: "not-[&.is-text]:h-10 not-[&.is-text]:px-6",
+		sm: "not-[&.is-text]:px-3 not-[&.is-text]:py-1",
+		md: "not-[&.is-text]:px-4 not-[&.is-text]:py-2",
+		lg: "not-[&.is-text]:px-6 not-[&.is-text]:py-3",
 		square: "not-[&.is-text]:size-9 not-[&.is-text]:md:size-9",
 	}[size];
 	const style = cn(
-		"relative inline-flex cursor-pointer items-center justify-center gap-2 rounded-md font-semibold whitespace-nowrap disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>svg]:pointer-events-none [&>svg]:shrink-0",
+		"relative inline-flex cursor-pointer flex-wrap items-center justify-center gap-2 truncate rounded-md font-semibold whitespace-nowrap disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>svg]:pointer-events-none [&>svg]:shrink-0",
 		[variantClass],
 		[sizeClass],
 		className,

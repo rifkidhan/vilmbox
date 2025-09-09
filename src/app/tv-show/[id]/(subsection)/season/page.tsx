@@ -20,6 +20,7 @@ export default async function TvSeasonsPage(props: PageProps<"/tv-show/[id]/seas
 					title={item.name}
 					url={`/tv-show/${id}/season/${item.season_number}`}
 					shadow
+					usePrefetch
 				>
 					<CardThumbnail title={item.name} img={item.poster_path ?? tv.poster_path} />
 					<CardContent slotted>
