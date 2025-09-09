@@ -2,13 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { EPISODE_SUFFIXES, IMAGE_URL, SEASON_SUFFIXES } from "$/lib/constants";
-import {
-	getPreference,
-	getTvCredits,
-	getTvDetails,
-	getTvImages,
-	getTvRecommendations,
-} from "$/lib/tmdb";
+import { getPreference, getTvCredits, getTvDetails, getTvImages } from "$/lib/tmdb";
 import {
 	formatCountryName,
 	formatDate,
@@ -219,7 +213,21 @@ export default async function TvPage(props: PageProps<"/tv-show/[id]">) {
 				</ul>
 			</Section>
 			<TvImages id={id} />
-			<Recommendation id={id} />
+			{!isNull(tv.recommendations.results) ? (
+				<Section name="Recommendations">
+					<Carousel>
+						<CarouselViewport>
+							{tv.recommendations.results.map((item) => (
+								<Card key={item.id} title={item.name} shadow url={`/tv-show/${item.id}`}>
+									<CardThumbnail title={item.name} img={item.poster_path} />
+									<CardContent rating={item.vote_average} title={item.name}></CardContent>
+								</Card>
+							))}
+						</CarouselViewport>
+						<CarouselButtons />
+					</Carousel>
+				</Section>
+			) : null}
 		</>
 	);
 }
@@ -284,34 +292,6 @@ const TvImages = async (props: { id: string }) => {
 			<Button asChild variant="text">
 				<Link href={`/tv-show/${props.id}/media`}>View all media</Link>
 			</Button>
-		</Section>
-	);
-};
-
-const Recommendation = async (props: { id: string }) => {
-	const recommendations = await getTvRecommendations(props.id);
-
-	return (
-		<Section name="Recommendations">
-			<Carousel>
-				<CarouselViewport>
-					<Suspense
-						fallback={Array(8)
-							.fill(0)
-							.map((_, i) => (
-								<CardSkeleton key={i} />
-							))}
-					>
-						{recommendations.map((item) => (
-							<Card key={item.id} title={item.name} shadow url={`/tv-show/${item.id}`}>
-								<CardThumbnail title={item.name} img={item.poster_path} />
-								<CardContent rating={item.vote_average} title={item.name}></CardContent>
-							</Card>
-						))}
-					</Suspense>
-				</CarouselViewport>
-				<CarouselButtons />
-			</Carousel>
 		</Section>
 	);
 };

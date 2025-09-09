@@ -1,32 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Suspense } from "react";
-import {
-	getMovieDetails,
-	getMovieOnCinema,
-	getMoviePopular,
-	getMovieTopRated,
-	getMovieTrending,
-	getPreference,
-} from "$/lib/tmdb";
+import { getMovieOnCinema, getMoviePopular, getMovieTopRated, getMovieTrending } from "$/lib/tmdb";
 import { randomize } from "$/utils/array";
-import { formatRuntime, getYear } from "$/utils/format";
-import Button from "$/components/button";
 import { Card, CardContent, CardSkeleton, CardThumbnail } from "$/components/card";
 import { Carousel, CarouselButtons, CarouselViewport } from "$/components/carousel";
-import {
-	Hero,
-	HeroAction,
-	HeroContent,
-	HeroGenres,
-	HeroMisc,
-	HeroOverview,
-	HeroPoster,
-	HeroSkeleton,
-	HeroTitle,
-	HeroWrapper,
-} from "$/components/hero";
-import Icon from "$/components/icon";
+import { Hero, HeroMinimal, HeroSkeleton } from "$/components/hero";
 import Section from "$/components/section";
 
 export const metadata: Metadata = {
@@ -43,38 +21,21 @@ export const metadata: Metadata = {
 };
 
 export default async function MoviePage() {
-	const { region } = await getPreference();
 	const trending = await getMovieTrending("day");
-	const randomMovie = await getMovieDetails(`${randomize(trending.results).id}`, region);
+	const randomMovie = randomize(trending.results);
 
 	return (
 		<>
-			<Suspense fallback={<HeroSkeleton />}>
-				<Hero backdrop_path={randomMovie.backdrop_path}>
-					<HeroWrapper>
-						<HeroPoster poster_path={randomMovie.poster_path} title={randomMovie.title} />
-						<HeroContent>
-							<HeroTitle title={randomMovie.title} tagline={randomMovie.tagline} />
-							<HeroMisc>
-								{randomMovie.certificate ? <li>{randomMovie.certificate.certificate}</li> : null}
-								{randomMovie.release_date ? <li>{getYear(randomMovie.release_date)}</li> : null}
-								{randomMovie.runtime ? <li>{formatRuntime(randomMovie.runtime)}</li> : null}
-							</HeroMisc>
-							<HeroGenres genres={randomMovie.genres} />
-							<HeroAction
-								vote_average={randomMovie.vote_average}
-								vote_count={randomMovie.vote_count}
-								videos={randomMovie.videos.results}
-							/>
-							<HeroOverview overview={randomMovie.overview} />
-							<Button asChild variant="theme" size="lg" className="w-full">
-								<Link href={`/movie/${randomMovie.id}`}>
-									<span>Go to {randomMovie.title}</span>
-									<Icon name="arrow-right" isHidden />
-								</Link>
-							</Button>
-						</HeroContent>
-					</HeroWrapper>
+			<Suspense fallback={<HeroSkeleton type="minimal" />}>
+				<Hero backdrop_path={randomMovie.backdrop_path} minimal>
+					<HeroMinimal
+						id={randomMovie.id}
+						name={randomMovie.title}
+						type={randomMovie.media_type}
+						date={randomMovie.release_date}
+						vote_average={randomMovie.vote_average}
+						overview={randomMovie.overview}
+					/>
 				</Hero>
 			</Suspense>
 			<Section name="Trending" subtitle="Trending movie on this day.">

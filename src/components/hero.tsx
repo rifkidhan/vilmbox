@@ -27,9 +27,10 @@ export const Hero = ({
 			{...props}
 		>
 			<div
-				className={cn("absolute top-0 left-0 block size-full bg-accent-80", {
-					"relative right-0 left-[unset] z-[-1] mask-linear-180 mask-linear-from-20% mask-linear-to-90% md:absolute md:w-4/5 md:mask-linear-270 md:mask-linear-from-0% md:mask-linear-to-90% lg:mask-linear-from-20% lg:mask-linear-to-90%":
+				className={cn("block size-full bg-accent-80", {
+					"relative z-[-1] mask-linear-180 mask-linear-from-20% mask-linear-to-90% max-md:h-72 max-sm:h-54 md:absolute md:right-0 md:left-[unset] md:w-4/5 md:mask-linear-270 md:mask-linear-from-0% md:mask-linear-to-90% lg:mask-linear-from-20% lg:mask-linear-to-90%":
 						minimal,
+					"absolute top-0 left-0": !minimal,
 				})}
 			>
 				{backdrop_path ? (
@@ -53,7 +54,7 @@ export const HeroWrapper = (props: { children?: React.ReactNode }) => {
 
 export const HeroPoster = ({ poster_path, title }: { poster_path?: string; title?: string }) => {
 	return (
-		<div className="block h-fit w-[35cqw] overflow-hidden rounded-xl shadow-md @3xl/hero:w-[25cqw]">
+		<div className="block h-fit w-[45cqw] overflow-hidden rounded-xl shadow-md @3xl/hero:w-[30cqw] @5xl/hero:w-[25cqw]">
 			<Image src={poster_path} alt={defaultTitle(title)} priority />
 		</div>
 	);
@@ -77,7 +78,7 @@ export const HeroOverview = (props: { overview?: string }) => {
 export const HeroTitle = ({ title, tagline }: { title?: string; tagline?: string }) => {
 	return (
 		<div className="text-center @3xl/hero:text-left @5xl/hero:col-span-2">
-			<h1 className="text-vb-xl/13 font-semibold text-balance">{defaultTitle(title)}</h1>
+			<h1 className="text-vb-xl leading-none font-semibold text-balance">{defaultTitle(title)}</h1>
 			{tagline ? <div className="text-vb-md italic">{tagline}</div> : null}
 		</div>
 	);
@@ -154,7 +155,7 @@ export const HeroMinimal = ({
 	return (
 		<div className="relative bottom-[3lh] mx-auto block h-fit w-[92dvw] md:bottom-0 md:h-[65dvh] lg:h-[80dvh]">
 			<div className="flex h-full w-full flex-col justify-center-safe gap-4 text-accent-80 md:w-[70%] lg:w-1/2">
-				<div className="text-vb-xl/13 font-semibold text-pretty">{title}</div>
+				<div className="text-vb-xl leading-none font-semibold text-pretty">{title}</div>
 				<ul className="list-with-dot">
 					{type === "tv" ? <li>TV Series</li> : null}
 					<li className="inline-flex items-center gap-1">
@@ -171,7 +172,7 @@ export const HeroMinimal = ({
 				<div className="line-clamp-3 md:line-clamp-4">{overview}</div>
 				<Button asChild variant="theme" size="lg">
 					<Link href={`/${type === "tv" ? "tv-show" : "movie"}/${id}` as Route}>
-						<span>Go to {title}</span>
+						<span>More details</span>
 						<Icon name="arrow-right" isHidden />
 					</Link>
 				</Button>

@@ -1,8 +1,8 @@
 import type { Route } from "next";
 import cn from "clsx";
-import Link from "next/link";
 import Icon from "./icon";
 import Image from "./image";
+import Link from "./link";
 
 interface CardProps {
 	title?: string;
@@ -12,15 +12,17 @@ interface CardProps {
 	url?: string;
 	rank?: number;
 	shadow?: boolean;
+	usePrefetch?: boolean;
 }
 
 export const Card = ({
 	title = "untitled",
 	shadow,
 	url,
+	usePrefetch,
 	className,
 	...props
-}: Pick<CardProps, "title" | "url" | "shadow"> & React.ComponentProps<"div">) => {
+}: Pick<CardProps, "title" | "url" | "shadow" | "usePrefetch"> & React.ComponentProps<"div">) => {
 	return (
 		<div className={cn("@container/card block w-full", className)} title={url && title} {...props}>
 			<div
@@ -34,6 +36,7 @@ export const Card = ({
 				{url ? (
 					<Link
 						href={url as Route}
+						usePrefetch={usePrefetch}
 						aria-label={title}
 						draggable
 						className="absolute top-0 left-0 z-[1] size-full"

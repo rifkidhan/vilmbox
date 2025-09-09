@@ -359,18 +359,6 @@ export const getMovieCredits = async (id: string) => {
 	return data;
 };
 
-/** get movie recommendation */
-export const getMovieRecommendations = async (id: string) => {
-	"use cache";
-	cacheLife("days");
-
-	const data = await api<MovieDetail["recommendations"]>({
-		endpoint: `/movie/${id}/recommendations`,
-	});
-
-	return data.results;
-};
-
 /** get more detail movie data */
 export const getMovieDetails = async (id: string, region = "US") => {
 	"use cache";
@@ -379,7 +367,8 @@ export const getMovieDetails = async (id: string, region = "US") => {
 	const data = await api<MovieDetail>({
 		endpoint: `/movie/${id}`,
 		query: {
-			append_to_response: "release_dates,alternative_titles,keywords,external_ids,videos",
+			append_to_response:
+				"release_dates,alternative_titles,keywords,external_ids,videos,recommendations",
 		},
 	});
 
@@ -494,18 +483,6 @@ export const getTvCredits = async (id: string) => {
 	return data;
 };
 
-/** get tv-show recommendation */
-export const getTvRecommendations = async (id: string) => {
-	"use cache";
-	cacheLife("days");
-
-	const data = await api<TvSeriesDetail["recommendations"]>({
-		endpoint: `/tv/${id}/recommendations`,
-	});
-
-	return data.results;
-};
-
 /** get tv-show data more details */
 export const getTvDetails = async (id: string, region = "US") => {
 	"use cache";
@@ -514,7 +491,8 @@ export const getTvDetails = async (id: string, region = "US") => {
 	const data = await api<TvSeriesDetail>({
 		endpoint: `/tv/${id}`,
 		query: {
-			append_to_response: "alternative_titles,content_ratings,external_ids,keywords,videos",
+			append_to_response:
+				"alternative_titles,content_ratings,external_ids,keywords,videos,recommendations",
 		},
 	});
 

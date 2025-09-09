@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+import type { Metadata, Route } from "next";
 import { getTVSeasonDetail } from "$/lib/tmdb";
 import { formatDate } from "$/utils/format";
 import isNull from "$/utils/isNull";
 import GridVideos from "$/components/grid/grid-videos";
 import Image from "$/components/image";
+import Link from "$/components/link";
 import Section from "$/components/section";
 
 export const generateMetadata = async (
@@ -71,7 +71,7 @@ export default async function TvSeasonPage(props: PageProps<"/tv-show/[id]/seaso
 												{item.guest_stars.map((cast, i) => (
 													<li key={i}>
 														<Link
-															href={`/people/${cast.id}`}
+															href={`/people/${cast.id}` as Route}
 															className="group flex flex-col gap-1 leading-none"
 														>
 															<span className="group-hover:underline">{cast.name}</span>
@@ -90,7 +90,7 @@ export default async function TvSeasonPage(props: PageProps<"/tv-show/[id]/seaso
 													{item.crew.map((cast, i) => (
 														<li key={i}>
 															<Link
-																href={`/people/${cast.id}`}
+																href={`/people/${cast.id}` as Route}
 																className="group flex flex-col gap-1 leading-none"
 															>
 																<span className="group-hover:underline">{cast.name}</span>

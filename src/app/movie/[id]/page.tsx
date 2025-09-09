@@ -2,13 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { IMAGE_URL } from "$/lib/constants";
-import {
-	getMovieCredits,
-	getMovieDetails,
-	getMovieImages,
-	getMovieRecommendations,
-	getPreference,
-} from "$/lib/tmdb";
+import { getMovieCredits, getMovieDetails, getMovieImages, getPreference } from "$/lib/tmdb";
 import {
 	formatCountryName,
 	formatCurrency,
@@ -67,6 +61,7 @@ export default async function MoviePage(props: PageProps<"/movie/[id]">) {
 	const { region } = await getPreference();
 
 	const movie = await getMovieDetails(id, region);
+
 	return (
 		<>
 			<Suspense fallback={<HeroSkeleton />}>
@@ -140,7 +135,21 @@ export default async function MoviePage(props: PageProps<"/movie/[id]">) {
 				</ul>
 			</Section>
 			<MovieImages id={id} />
-			<Recommendation id={id} />
+			{!isNull(movie.recommendations.results) ? (
+				<Section name="Recommendations">
+					<Carousel>
+						<CarouselViewport>
+							{movie.recommendations.results.map((item) => (
+								<Card key={item.id} title={item.title} shadow url={`/movie/${item.id}`}>
+									<CardThumbnail title={item.title} img={item.poster_path} />
+									<CardContent rating={item.vote_average} title={item.title}></CardContent>
+								</Card>
+							))}
+						</CarouselViewport>
+						<CarouselButtons />
+					</Carousel>
+				</Section>
+			) : null}
 		</>
 	);
 }
@@ -199,34 +208,6 @@ const MovieImages = async (props: { id: string }) => {
 			<Button asChild variant="text">
 				<Link href={`/movie/${props.id}/media`}>View all media</Link>
 			</Button>
-		</Section>
-	);
-};
-
-const Recommendation = async (props: { id: string }) => {
-	const recommendations = await getMovieRecommendations(props.id);
-
-	return (
-		<Section name="Recommendations">
-			<Carousel>
-				<CarouselViewport>
-					<Suspense
-						fallback={Array(8)
-							.fill(0)
-							.map((_, i) => (
-								<CardSkeleton key={i} />
-							))}
-					>
-						{recommendations.map((item) => (
-							<Card key={item.id} title={item.title} shadow url={`/movie/${item.id}`}>
-								<CardThumbnail title={item.title} img={item.poster_path} />
-								<CardContent rating={item.vote_average} title={item.title}></CardContent>
-							</Card>
-						))}
-					</Suspense>
-				</CarouselViewport>
-				<CarouselButtons />
-			</Carousel>
 		</Section>
 	);
 };
