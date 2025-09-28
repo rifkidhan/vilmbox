@@ -51,7 +51,10 @@ export default async function MovieCreditsPage(props: PageProps<"/tv-show/[id]/c
 					{crews.keys.map((cat) => {
 						const category = crews.collection(cat);
 						return (
-							<div key={cat} className="flex flex-col gap-3">
+							<div
+								key={cat}
+								className="flex flex-col gap-3 [contain-intrinsic-size:auto_300px] content-visibility-auto"
+							>
 								<h3 className="text-vb-md font-semibold">{cat}</h3>
 								<ul className="grid grid-cols-2 gap-4 md:grid-cols-3">
 									{category

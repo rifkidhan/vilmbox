@@ -16,7 +16,7 @@ export default function Button({
 }: ButtonProps) {
 	const Component = asChild ? Slot : "button";
 	const variantClass = {
-		text: "text-primary is-text hover:text-accent-95 highlight w-fit font-medium",
+		text: "is-text highlight w-fit rounded-none font-medium text-primary hover:text-accent-95",
 		primary: "bg-accent-90 text-accent-10 hover:bg-accent-70",
 		secondary: "bg-accent-10 text-accent-90 hover:bg-accent-30",
 		outline: "bg-accent-10 text-accent-90 hover:bg-accent-20",
