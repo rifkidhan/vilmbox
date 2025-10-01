@@ -1,8 +1,11 @@
+import type { Route } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { NAVIGATIONS, TITLE_PAGE } from "$/lib/constants";
 import Button from "../button";
 import Icon from "../icon";
 import MobileNavigation from "./mobile-navigation";
+import Search, { SearchSkeleton } from "./search";
 import ThemeTogle from "./theme-toggle";
 
 export default function Header() {
@@ -15,28 +18,33 @@ export default function Header() {
 				>
 					{TITLE_PAGE}
 				</Link>
-				<div className="flex flex-row items-center gap-6">
-					<ul className="hidden flex-row gap-3 md:inline-flex">
-						{NAVIGATIONS.map((item) => (
-							<li key={item.url}>
-								<Link href={item.url}>{item.title}</Link>
+				<div className="grid grid-cols-2 items-center gap-2 md:grid-cols-[auto_minmax(0,1fr)_auto] md:gap-6">
+					<div className="hidden md:block">
+						<Suspense fallback={<SearchSkeleton />}>
+							<Search />
+						</Suspense>
+					</div>
+					<ul className="hidden shrink-0 flex-row gap-3 md:inline-flex">
+						{NAVIGATIONS.slice(1).map((item) => (
+							<li key={item.name}>
+								<Link href={item.slug as Route} className="hover:underline">
+									{item.name}
+								</Link>
 							</li>
 						))}
 					</ul>
-					<div className="inline-flex flex-row gap-2">
-						<ThemeTogle />
-						<Button
-							type="button"
-							variant="ghost"
-							size="square"
-							popoverTarget="mobile-navigation"
-							popoverTargetAction="show"
-							className="md:hidden"
-						>
-							<Icon name="menu" isHidden />
-							<span className="sr-only">open navigation</span>
-						</Button>
-					</div>
+					<ThemeTogle />
+					<Button
+						type="button"
+						variant="ghost"
+						size="square"
+						popoverTarget="mobile-navigation"
+						popoverTargetAction="show"
+						className="md:hidden"
+					>
+						<Icon name="menu" isHidden />
+						<span className="sr-only">open navigation</span>
+					</Button>
 				</div>
 			</nav>
 			<MobileNavigation />

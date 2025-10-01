@@ -3,6 +3,7 @@ import type { Genre, MediaType, Video } from "$/lib/tmdb/types";
 import cn from "clsx";
 import Link from "next/link";
 import { getYear } from "$/utils/format";
+import mediaType from "$/utils/media-type";
 import Button from "./button";
 import Icon from "./icon";
 import Image from "./image";
@@ -171,7 +172,7 @@ export const HeroMinimal = ({
 				</ul>
 				<div className="line-clamp-3 md:line-clamp-4">{overview}</div>
 				<Button asChild variant="theme" size="lg">
-					<Link href={`/${type === "tv" ? "tv-show" : "movie"}/${id}` as Route}>
+					<Link href={`/${mediaType(type).id}/${id}` as Route}>
 						<span>More details</span>
 						<Icon name="arrow-right" isHidden />
 					</Link>

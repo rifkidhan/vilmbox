@@ -46,10 +46,10 @@ export const MinimalHeader = ({
 				/>
 			</div>
 			<div className="mx-auto min-h-30 w-full py-8 text-white backdrop-blur-3xl">
-				<hgroup className="mx-auto max-w-[92dvw]">
+				<div className="mx-auto max-w-[92dvw]">
 					<h1 className="text-vb-xl leading-none font-bold">{title}</h1>
 					{children ? children : null}
-				</hgroup>
+				</div>
 			</div>
 		</div>
 	);

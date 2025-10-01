@@ -10,6 +10,7 @@ export default function Pagination({ max = 50 }) {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 	const router = useRouter();
+	const newParams = new URLSearchParams(searchParams.toString());
 
 	const page = useMemo(() => {
 		const now = searchParams.get("page");
@@ -63,11 +64,16 @@ export default function Pagination({ max = 50 }) {
 	}, [max, page]);
 
 	return (
-		<div className="mx-auto flex max-w-[92dvw] flex-wrap items-center-safe justify-evenly gap-2">
+		<div className="flex max-w-[92dvw] flex-wrap items-center-safe justify-center-safe gap-2 md:gap-4 lg:gap-6">
 			<Button
 				onClick={() => {
-					const param = page >= 3 ? `?page=${page - 1}` : "";
-					router.push(`${pathname}${param}` as Route);
+					if (page >= 3) {
+						newParams.set("page", `${page - 1}`);
+					} else {
+						newParams.delete("page");
+					}
+					const param = newParams.toString();
+					router.push(`${pathname}${param.length ? "?" : ""}${param}` as Route);
 				}}
 				disabled={page <= 1}
 				size="square"
@@ -92,7 +98,10 @@ export default function Pagination({ max = 50 }) {
 						<Button
 							key={i}
 							onClick={() => {
-								router.push(`${pathname}` as Route);
+								newParams.delete("page");
+								const param = newParams.toString();
+
+								router.push(`${pathname}${param.length ? "?" : ""}${param}` as Route);
 							}}
 							disabled={page === item.value}
 							size="square"
@@ -106,7 +115,9 @@ export default function Pagination({ max = 50 }) {
 						<Button
 							key={i}
 							onClick={() => {
-								router.push(`${pathname}?page=${item.value}` as Route);
+								newParams.set("page", `${item.value}`);
+								const param = newParams.toString();
+								router.push(`${pathname}${param.length ? "?" : ""}${param}` as Route);
 							}}
 							disabled={page === item.value}
 							size="square"
@@ -118,7 +129,9 @@ export default function Pagination({ max = 50 }) {
 			})}
 			<Button
 				onClick={() => {
-					router.push(`${pathname}?page=${page + 1}` as Route);
+					newParams.set("page", `${page + 1}`);
+					const param = newParams.toString();
+					router.push(`${pathname}${param.length ? "?" : ""}${param}` as Route);
 				}}
 				disabled={page >= max}
 				size="square"

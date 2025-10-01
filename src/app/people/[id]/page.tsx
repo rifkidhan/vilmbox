@@ -192,7 +192,7 @@ export default async function PersonPage(props: PageProps<"/people/[id]">) {
 const Details = ({ section, ...props }: { section: string } & React.ComponentProps<"details">) => {
 	return (
 		<details
-			className="group/details relative flex flex-col overflow-hidden rounded-lg shadow-lg shadow-black/30 details-content:h-0 details-content:overflow-y-clip details-content:opacity-0 details-content:transition details-content:transition-discrete details-content:duration-500 details-content:ease-in-out open:gap-4 open:details-content:h-fit open:details-content:opacity-100"
+			className="group/details relative flex flex-col overflow-hidden rounded-lg shadow-lg shadow-black/30 details-content:h-0 details-content:overflow-y-clip details-content:transition-all details-content:transition-discrete details-content:duration-500 details-content:ease-in-out open:gap-4 open:details-content:h-fit"
 			{...props}
 		>
 			<summary className="block cursor-pointer bg-accent-5 py-4 font-semibold">

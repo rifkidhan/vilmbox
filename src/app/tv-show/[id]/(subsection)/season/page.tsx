@@ -20,9 +20,8 @@ export default async function TvSeasonsPage(props: PageProps<"/tv-show/[id]/seas
 					title={item.name}
 					url={`/tv-show/${id}/season/${item.season_number}`}
 					shadow
-					usePrefetch
 				>
-					<CardThumbnail title={item.name} img={item.poster_path ?? tv.poster_path} />
+					<CardThumbnail title={item.name} img={item.poster_path ?? tv.poster_path} size="sm" />
 					<CardContent slotted>
 						<h2 className="text-vb-md font-semibold group-hover/card:underline">
 							<span>{item.name}</span>

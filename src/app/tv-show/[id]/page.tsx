@@ -72,7 +72,16 @@ export default async function TvPage(props: PageProps<"/tv-show/[id]">) {
 							<HeroTitle title={tv.name} tagline={tv.tagline} />
 							<HeroMisc>
 								{tv.certificate ? <li>{tv.certificate.rating}</li> : null}
-								{tv.first_air_date ? <li>{getYear(tv.first_air_date)}</li> : null}
+								{tv.first_air_date ? (
+									<li>
+										{getYear(tv.first_air_date)}
+										{tv.last_air_date &&
+										tv.status === "Ended" &&
+										getYear(tv.last_air_date) !== getYear(tv.first_air_date)
+											? ` - ${getYear(tv.last_air_date)}`
+											: ""}
+									</li>
+								) : null}
 								{tv.episode_run_time[0] ? <li>{formatRuntime(tv.episode_run_time[0])}</li> : null}
 							</HeroMisc>
 							<HeroGenres genres={tv.genres} />

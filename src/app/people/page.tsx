@@ -29,26 +29,30 @@ export default async function PeoplePage(props: PageProps<"/people">) {
 	return (
 		<>
 			<MinimalHeader title="Popular Person">
-				<Subtitle />
+				<Suspense fallback={null}>
+					<Subtitle />
+				</Suspense>
 			</MinimalHeader>
-			<div className="mx-auto grid w-[92dvw] grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+			<div className="mx-auto flex w-[92dvw] flex-col gap-6">
 				<Suspense fallback={<GridSkeleton length={20} />}>
-					{persons.results.map((item) => (
-						<Card key={item.id} title={item.name} url={`/people/${item.id}`} shadow>
-							<CardThumbnail title={item.name} img={item.profile_path} />
-							<CardContent title={item.name}>
-								<div className="flex flex-col gap-1 text-vb-sm">
-									<div className="font-semibold">Known for</div>
-									<div className="leading-none wrap-break-word text-accent-70">
-										{listFormat(item.known_for.map((v) => v.title ?? v.name ?? ""))}
+					<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+						{persons.results.map((item) => (
+							<Card key={item.id} title={item.name} url={`/people/${item.id}`} shadow>
+								<CardThumbnail title={item.name} img={item.profile_path} />
+								<CardContent title={item.name}>
+									<div className="flex flex-col gap-1 text-vb-sm">
+										<div className="font-semibold">Known for</div>
+										<div className="leading-none wrap-break-word text-accent-70">
+											{listFormat(item.known_for.map((v) => v.title ?? v.name ?? ""))}
+										</div>
 									</div>
-								</div>
-							</CardContent>
-						</Card>
-					))}
+								</CardContent>
+							</Card>
+						))}
+					</div>
+					<Pagination />
 				</Suspense>
 			</div>
-			<Pagination />
 		</>
 	);
 }

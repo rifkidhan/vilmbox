@@ -12,17 +12,15 @@ interface CardProps {
 	url?: string;
 	rank?: number;
 	shadow?: boolean;
-	usePrefetch?: boolean;
 }
 
 export const Card = ({
 	title = "untitled",
 	shadow,
 	url,
-	usePrefetch,
 	className,
 	...props
-}: Pick<CardProps, "title" | "url" | "shadow" | "usePrefetch"> & React.ComponentProps<"div">) => {
+}: Pick<CardProps, "title" | "url" | "shadow"> & React.ComponentProps<"div">) => {
 	return (
 		<div className={cn("@container/card block w-full", className)} title={url && title} {...props}>
 			<div
@@ -36,7 +34,6 @@ export const Card = ({
 				{url ? (
 					<Link
 						href={url as Route}
-						usePrefetch={usePrefetch}
 						aria-label={title}
 						draggable
 						className="absolute top-0 left-0 z-[1] size-full"
@@ -54,12 +51,20 @@ export const CardThumbnail = ({
 	img_type = "poster",
 	rank,
 	children,
+	size = "md",
 }: Pick<CardProps, "title" | "img" | "img_type" | "rank"> & {
 	children?: React.ReactNode;
+	size?: "sm" | "md";
 }) => {
 	return (
 		<div
-			className="relative h-auto w-[100cqw] shrink-0 overflow-hidden rounded-lg empty:hidden @min-[200px]/card:w-[30cqw] @md/card:w-[23cqw] @4xl/card:w-[18cqw] [&>img]:transition-transform [&>img]:ease-in-out group-has-[a]/card:group-hover/card:[&>img]:scale-105"
+			className={cn(
+				"relative h-auto w-[100cqw] shrink-0 overflow-hidden rounded-lg empty:hidden [&>img]:transition-transform [&>img]:ease-in-out group-has-[a]/card:group-hover/card:[&>img]:scale-105",
+				{
+					"@min-[200px]/card:w-[30cqw] @md/card:w-[23cqw] @4xl/card:w-[18cqw]": size === "md",
+					"@min-[200px]/card:w-[20cqw] @md/card:w-[15cqw] @4xl/card:w-[10cqw]": size === "sm",
+				},
+			)}
 			data-rank={rank}
 		>
 			{children ? children : <Image src={img} alt={title} type={img_type} />}

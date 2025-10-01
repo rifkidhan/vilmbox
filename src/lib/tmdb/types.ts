@@ -233,8 +233,10 @@ interface PaginationResult {
 
 export type MovieTV = MovieType & TvType;
 
+export type All = MovieType & TvType & PersonType;
+
 export interface TrendingAll extends PaginationResult {
-	results: MovieTV[];
+	results: All[];
 }
 
 export interface MovieTrending extends PaginationResult {
@@ -243,6 +245,10 @@ export interface MovieTrending extends PaginationResult {
 
 export interface TVTrending extends PaginationResult {
 	results: TvType[];
+}
+
+export interface PeopleTrending extends PaginationResult {
+	results: PersonType[];
 }
 
 export interface MovieDiscover extends PaginationResult {
@@ -255,6 +261,14 @@ export interface TVDiscover extends PaginationResult {
 
 export interface PersonPopular extends PaginationResult {
 	results: Omit<PersonType, "media_type">[];
+}
+
+type CombineSeachType = Omit<MovieType, "media_type"> &
+	Omit<TvType, "media_type"> &
+	Omit<PersonType, "media_type">;
+
+export interface CombineSearch extends PaginationResult {
+	results: CombineSeachType[];
 }
 
 export interface MovieDetail extends Omit<MovieType, "genre_ids" | "media_type"> {

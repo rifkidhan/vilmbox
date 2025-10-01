@@ -1,26 +1,27 @@
-import type { Route } from "next";
-
 export const TITLE_PAGE = "vilmbox";
 export const DESCRIPTION_PAGE = "The movie and tv show database website";
 export const IMAGE_URL = "https://image.tmdb.org/t/p/";
 
-type NavItems<T extends string = string> = {
-	title: string;
-	url: T;
-};
-
-export const NAVIGATIONS: NavItems<Route>[] = [
+export const NAVIGATIONS = [
 	{
-		title: "Movies",
-		url: "/movie",
+		id: null,
+		slug: "/",
+		name: "All",
 	},
 	{
-		title: "TV Shows",
-		url: "/tv-show",
+		id: "movie",
+		slug: "/movie",
+		name: "Movies",
 	},
 	{
-		title: "People",
-		url: "/people",
+		id: "tv-show",
+		slug: "/tv-show",
+		name: "TV Shows",
+	},
+	{
+		id: "people",
+		slug: "/people",
+		name: "People",
 	},
 ];
 

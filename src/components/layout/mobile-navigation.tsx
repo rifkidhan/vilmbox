@@ -1,10 +1,12 @@
 "use client";
 
+import type { Route } from "next";
 import Link from "next/link";
-import { useRef } from "react";
+import { Suspense, useRef } from "react";
 import { NAVIGATIONS } from "$/lib/constants";
 import Button from "../button";
 import Icon from "../icon";
+import Search, { SearchSkeleton } from "./search";
 
 export default function MobileNavigation() {
 	const ref = useRef<HTMLDivElement | null>(null);
@@ -12,11 +14,14 @@ export default function MobileNavigation() {
 	return (
 		<div
 			id="mobile-navigation"
-			className="top-0 right-0 mx-auto h-dvh w-max min-w-[50dvw] px-6 shadow-md"
+			className="top-0 right-0 mx-auto h-dvh w-max min-w-[70dvw] translate-x-50 px-6 transition-all transition-discrete duration-500 open:translate-0 starting:open:translate-x-50"
 			popover="auto"
 			ref={ref}
 		>
 			<div className="flex h-(--header-height) items-center justify-end gap-6">
+				<Suspense fallback={<SearchSkeleton />}>
+					<Search />
+				</Suspense>
 				<Button
 					variant="ghost"
 					size="square"
@@ -29,15 +34,15 @@ export default function MobileNavigation() {
 			</div>
 			<nav className="text-vb-xl">
 				<ul>
-					{NAVIGATIONS.map((item) => (
-						<li key={item.url}>
+					{NAVIGATIONS.slice(1).map((item) => (
+						<li key={item.name}>
 							<Link
-								href={item.url}
+								href={item.slug as Route}
 								onNavigate={() => {
 									ref.current?.hidePopover();
 								}}
 							>
-								{item.title}
+								{item.name}
 							</Link>
 						</li>
 					))}

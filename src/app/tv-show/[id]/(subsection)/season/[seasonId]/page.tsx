@@ -36,8 +36,7 @@ export default async function TvSeasonPage(props: PageProps<"/tv-show/[id]/seaso
 						<li key={i}>
 							<details
 								name="episode"
-								open={i === 0}
-								className="relative flex flex-col overflow-hidden rounded-lg text-vb-sm shadow-lg shadow-black/50 details-content:h-0 details-content:overflow-y-clip details-content:opacity-0 details-content:transition-all details-content:transition-discrete details-content:duration-500 details-content:ease-in-out open:gap-4 open:details-content:h-fit open:details-content:opacity-100"
+								className="relative flex flex-col overflow-hidden rounded-lg text-vb-sm shadow-lg shadow-black/50 details-content:h-0 details-content:overflow-y-clip details-content:transition-all details-content:transition-discrete details-content:duration-500 details-content:ease-in-out open:gap-4 open:details-content:h-fit"
 							>
 								<summary className="@container/card block w-full cursor-pointer">
 									<div className="relative flex size-full flex-col items-center gap-2 overflow-hidden rounded-lg bg-accent-5 select-none @min-[200px]/card:flex-row @min-[200px]/card:p-2 @md/card:gap-4 @md/card:p-4">

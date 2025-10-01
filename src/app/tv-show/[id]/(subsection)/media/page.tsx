@@ -37,7 +37,7 @@ const TvVideos = async (props: { id: string }) => {
 	const videos = await getTvVideos(props.id);
 
 	return (
-		<Section name="Media">
+		<Section name="Videos">
 			<Suspense fallback={<GridSkeleton />}>
 				<GridVideos videos={videos} />
 			</Suspense>

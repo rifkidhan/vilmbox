@@ -2,9 +2,11 @@ import type {
 	CombineCast,
 	CombineCrew,
 	CombineImage,
+	CombineSearch,
 	MovieDetail,
 	MovieDiscover,
 	MovieTrending,
+	PeopleTrending,
 	PersonDetail,
 	PersonPopular,
 	SeasonDetail,
@@ -179,6 +181,59 @@ const getRating = (
 	return certificate;
 };
 
+// search
+
+export const getMultiSearch = async (query?: string, page = "1") => {
+	if (!query || query === "") {
+		return undefined;
+	}
+	const data = await api<TrendingAll>({
+		endpoint: "/search/multi",
+		query: {
+			query,
+			page,
+		},
+	});
+
+	return data;
+};
+
+export const getMovieSearch = async (query: string, page = "1") => {
+	const data = await api<CombineSearch>({
+		endpoint: "/search/movie",
+		query: {
+			query,
+			page,
+		},
+	});
+
+	return data;
+};
+
+export const getTvSearch = async (query: string, page = "1") => {
+	const data = await api<CombineSearch>({
+		endpoint: "/search/tv",
+		query: {
+			query,
+			page,
+		},
+	});
+
+	return data;
+};
+
+export const getPersonSearch = async (query: string, page = "1") => {
+	const data = await api<CombineSearch>({
+		endpoint: "/search/person",
+		query: {
+			query,
+			page,
+		},
+	});
+
+	return data;
+};
+
 // trending data
 
 /** get all trendings */
@@ -209,6 +264,18 @@ export const getTvTrending = async (time = "week") => {
 	cacheLife("days");
 
 	const data = await api<TVTrending>({ endpoint: `/trending/tv/${time}` });
+
+	return data;
+};
+
+/** get trending person */
+export const getPeopleTrending = async (time = "week") => {
+	"use cache";
+	cacheLife("days");
+
+	const data = await api<PeopleTrending>({
+		endpoint: `/trending/person/${time}`,
+	});
 
 	return data;
 };
