@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { getTvPopular, getTvTopRated, getTvTrending } from "$/lib/tmdb";
+import { getAiringTv, getPreference, getTvPopular, getTvTopRated, getTvTrending } from "$/lib/tmdb";
 import { randomize } from "$/utils/array";
 import { Card, CardContent, CardSkeleton, CardThumbnail } from "$/components/card";
 import { Carousel, CarouselButtons, CarouselViewport } from "$/components/carousel";
@@ -21,6 +21,7 @@ export const metadata: Metadata = {
 };
 
 export default async function TVPage() {
+	const { region } = await getPreference();
 	const trending = await getTvTrending("day");
 	const randomTv = randomize(trending.results);
 
@@ -61,6 +62,7 @@ export default async function TVPage() {
 			</Section>
 			<PopularMovies />
 			<TopRatedTv />
+			<AiringToday region={region} />
 		</>
 	);
 }
@@ -92,6 +94,7 @@ const PopularMovies = async () => {
 		</Section>
 	);
 };
+
 const TopRatedTv = async () => {
 	const topRated = await getTvTopRated();
 
@@ -107,6 +110,34 @@ const TopRatedTv = async () => {
 							))}
 					>
 						{topRated.results.map((item) => (
+							<Card key={item.id} title={item.name} shadow url={`/tv-show/${item.id}`}>
+								<CardThumbnail title={item.name} img={item.poster_path} />
+								<CardContent rating={item.vote_average} title={item.name}></CardContent>
+							</Card>
+						))}
+					</Suspense>
+				</CarouselViewport>
+				<CarouselButtons />
+			</Carousel>
+		</Section>
+	);
+};
+
+const AiringToday = async ({ region }: { region: string }) => {
+	const airing = await getAiringTv(region);
+
+	return (
+		<Section name="Airing TV Show" subtitle="Currently airing tv shows.">
+			<Carousel>
+				<CarouselViewport>
+					<Suspense
+						fallback={Array(8)
+							.fill(0)
+							.map((_, i) => (
+								<CardSkeleton key={i} />
+							))}
+					>
+						{airing.results.map((item) => (
 							<Card key={item.id} title={item.name} shadow url={`/tv-show/${item.id}`}>
 								<CardThumbnail title={item.name} img={item.poster_path} />
 								<CardContent rating={item.vote_average} title={item.name}></CardContent>

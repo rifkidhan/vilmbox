@@ -2,7 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { IMAGE_URL } from "$/lib/constants";
-import { getMovieCredits, getMovieDetails, getMovieImages, getPreference } from "$/lib/tmdb";
+import {
+	getCollection,
+	getMovieCredits,
+	getMovieDetails,
+	getMovieImages,
+	getPreference,
+} from "$/lib/tmdb";
 import {
 	formatCountryName,
 	formatCurrency,
@@ -10,6 +16,7 @@ import {
 	formatLanguage,
 	formatRuntime,
 	getYear,
+	listFormat,
 } from "$/utils/format";
 import isNull from "$/utils/isNull";
 import Button from "$/components/button";
@@ -29,6 +36,7 @@ import {
 	HeroWrapper,
 } from "$/components/hero";
 import Icon from "$/components/icon";
+import Image from "$/components/image";
 import ListItem from "$/components/list-item";
 import OfficialSite from "$/components/official-site";
 import Section from "$/components/section";
@@ -44,6 +52,7 @@ export const generateMetadata = async (props: PageProps<"/movie/[id]">): Promise
 				? `${movie.title} (${getYear(movie.release_date)})`
 				: movie.title
 			: "untitled",
+		description: movie.overview,
 		alternates: {
 			canonical: `/movie/${id}`,
 		},
@@ -135,6 +144,11 @@ export default async function MoviePage(props: PageProps<"/movie/[id]">) {
 				</ul>
 			</Section>
 			<MovieImages id={id} />
+			{movie.belongs_to_collection ? (
+				<Suspense fallback={null}>
+					<BelongToCollection id={movie.belongs_to_collection.id.toString()} />
+				</Suspense>
+			) : null}
 			{!isNull(movie.recommendations.results) ? (
 				<Section name="Recommendations">
 					<Carousel>
@@ -154,8 +168,8 @@ export default async function MoviePage(props: PageProps<"/movie/[id]">) {
 	);
 }
 
-const CastCarousel = async (props: { id: string }) => {
-	const casts = await getMovieCredits(props.id);
+const CastCarousel = async ({ id }: { id: string }) => {
+	const casts = await getMovieCredits(id);
 	return (
 		<Section name="Cast">
 			<Carousel>
@@ -177,7 +191,7 @@ const CastCarousel = async (props: { id: string }) => {
 						))}
 						<div className="group block rounded-xl shadow-lg shadow-black/30 transition-shadow select-none hover:shadow-xl">
 							<Link
-								href={`/movie/${props.id}/credits`}
+								href={`/movie/${id}/credits`}
 								className="flex size-full flex-col items-center-safe justify-center-safe"
 							>
 								<Icon
@@ -197,8 +211,8 @@ const CastCarousel = async (props: { id: string }) => {
 	);
 };
 
-const MovieImages = async (props: { id: string }) => {
-	const images = await getMovieImages(props.id);
+const MovieImages = async ({ id }: { id: string }) => {
+	const images = await getMovieImages(id);
 
 	return (
 		<Section name="Media">
@@ -206,8 +220,35 @@ const MovieImages = async (props: { id: string }) => {
 				<GridImages images={images.slice(0, 10)} />
 			</Suspense>
 			<Button asChild variant="text">
-				<Link href={`/movie/${props.id}/media`}>View all media</Link>
+				<Link href={`/movie/${id}/media`}>View all media</Link>
 			</Button>
 		</Section>
+	);
+};
+
+const BelongToCollection = async ({ id }: { id: string }) => {
+	const collection = await getCollection(id);
+
+	return (
+		<Hero backdrop_path={collection.backdrop_path}>
+			<div className="@container/section w-full py-4 backdrop-blur-2xl backdrop-brightness-50 md:py-10">
+				<div className="mx-auto grid max-w-[92dvw] grid-cols-1 place-items-center-safe items-center-safe gap-4 @3xl/section:grid-cols-[auto_minmax(0,1fr)] @3xl/section:gap-6">
+					<div className="block h-fit w-[30cqw] overflow-hidden rounded-xl shadow-md @3xl/section:w-[20cqw] @5xl/section:w-[15cqw]">
+						<Image src={collection.poster_path} alt={collection.name} />
+					</div>
+					<div className="w-full text-center @3xl/section:text-left">
+						<h2 className="mb-2 text-vb-lg leading-none font-semibold @3xl/section:mb-4">
+							Part of the {collection.name}
+						</h2>
+						<div className="mb-4 @3xl/section:mb-8">
+							Includes {listFormat(collection.parts.map((v) => v.title ?? ""))}
+						</div>
+						<Button asChild variant="theme">
+							<Link href={`/collection/${id}`}>Go to {collection.name}</Link>
+						</Button>
+					</div>
+				</div>
+			</div>
+		</Hero>
 	);
 };

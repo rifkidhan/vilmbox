@@ -63,7 +63,7 @@ export const HeroPoster = ({ poster_path, title }: { poster_path?: string; title
 
 export const HeroContent = (props: { children?: React.ReactNode }) => {
 	return (
-		<div className="grid h-full grid-cols-subgrid place-items-center-safe content-between gap-4 @3xl/hero:place-items-start @5xl/hero:col-span-2">
+		<div className="grid h-full grid-cols-subgrid place-items-center-safe gap-4 @3xl/hero:place-items-start @5xl/hero:col-span-2">
 			{props.children}
 		</div>
 	);
@@ -96,10 +96,10 @@ export const HeroAction = ({
 }: {
 	vote_average: number;
 	vote_count: number;
-	videos: Video[];
+	videos?: Video[];
 }) => {
 	const getVideoPreview = () => {
-		if (videos.length < 1) return undefined;
+		if (!videos || videos.length < 1) return undefined;
 
 		let preview = videos.find((v) => v.type === "Trailer");
 

@@ -15,6 +15,7 @@ export const generateMetadata = async (
 
 	return {
 		title: season.name ? season.name : `Season ${season.season_number}`,
+		description: season.overview,
 	};
 };
 

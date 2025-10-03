@@ -21,6 +21,7 @@ export const generateMetadata = async (props: LayoutProps<"/movie/[id]">): Promi
 			default: `${defaultTitle} | ${TITLE_PAGE}`,
 			template: `${defaultTitle} - %s | ${TITLE_PAGE}`,
 		},
+		description: movie.overview,
 		openGraph: {
 			title: {
 				default: `${defaultTitle} | ${TITLE_PAGE}`,

@@ -45,6 +45,7 @@ export const generateMetadata = async (props: PageProps<"/tv-show/[id]">): Promi
 				? `${tv.name} (${getYear(tv.first_air_date)})`
 				: tv.name
 			: "untitled",
+		description: tv.overview,
 		alternates: {
 			canonical: `/tv-show/${id}`,
 		},

@@ -217,7 +217,7 @@ export const CarouselDotButtons = ({ length = 8 }: { length?: number }) => {
 							type="button"
 							aria-label={`Slides ${i + 1}`}
 							aria-current={slideInView === i}
-							className="size-[1rem] rounded-full border-2 aria-[current=true]:bg-accent-90"
+							className="size-2 cursor-pointer rounded-full border aria-[current=true]:bg-accent-90 md:size-4"
 							onClick={() => scrollTo(i)}
 						/>
 					))}

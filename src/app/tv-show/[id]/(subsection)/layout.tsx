@@ -20,6 +20,7 @@ export const generateMetadata = async (props: LayoutProps<"/tv-show/[id]">): Pro
 			default: `${defaultTitle} | ${TITLE_PAGE}`,
 			template: `${defaultTitle} - %s | ${TITLE_PAGE}`,
 		},
+		description: tv.overview,
 		openGraph: {
 			title: {
 				default: `${defaultTitle} | ${TITLE_PAGE}`,

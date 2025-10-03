@@ -1,4 +1,5 @@
 import type {
+	Collection,
 	CombineCast,
 	CombineCrew,
 	CombineImage,
@@ -296,14 +297,14 @@ export const getMovieOnCinema = async (region = "US", page = "1") => {
 	const data = await api<MovieDiscover>({
 		endpoint: "/discover/movie",
 		query: {
-			page: page,
-			watch_region: region,
+			page,
 			sort_by: "popularity.desc",
-			region: region,
+			region,
+			watch_region: region,
 			with_release_type: "2|3",
-			"release_date.gte": getDate(now - week * 2),
-			"release_date.lte": getDate(now + day),
-			with_watch_monetization_type: "flatrate",
+			"primary_release_date.gte": getDate(now - week * 2),
+			"primary_release_date.lte": getDate(now + week * 2),
+			with_watch_monetization_types: "flatrate",
 			without_keywords: "softcore|sexy",
 		},
 	});
@@ -486,6 +487,29 @@ export const getTvPopular = async (page = "1") => {
 			sort_by: "popularity.desc",
 			"vote_count.gte": "1000",
 			page: page,
+		},
+	});
+
+	return data;
+};
+
+/** get airing tv-show data */
+export const getAiringTv = async (region = "US", page = "1") => {
+	"use cache";
+	cacheLife("days");
+
+	const now = Date.now();
+
+	const data = await api<TVDiscover>({
+		endpoint: "/discover/tv",
+		query: {
+			page,
+			region,
+			watch_region: region,
+			sort_by: "popularity.desc",
+			"air_date.gte": getDate(now - week * 2),
+			"air_date.lte": getDate(now + week * 2),
+			with_watch_monetization_types: "flatrate|free|rent|buy",
 		},
 	});
 
@@ -727,4 +751,38 @@ export const getPersonDetails = async (id: string) => {
 		popular_cast: popular_cast,
 		popular_crew: popular_crew,
 	};
+};
+
+/** get collection details */
+export const getCollection = async (id: string) => {
+	"use cache";
+	cacheLife("days");
+
+	const data = await api<Collection>({
+		endpoint: `/collection/${id}`,
+	});
+
+	return data;
+};
+
+/** get collection images */
+export const getCollectionImages = async (id: string) => {
+	"use cache";
+	cacheLife("days");
+
+	const data = await api<MovieDetail["images"]>({
+		endpoint: `/collection/${id}/images`,
+		query: {
+			include_image_language: "en,null",
+		},
+	});
+
+	const backdropImage = data.backdrops.map((image) => ({
+		...image,
+		backdrop: true,
+	}));
+
+	const images = [...data.posters, ...backdropImage] as CombineImage[];
+
+	return shuffle(images);
 };

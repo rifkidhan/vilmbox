@@ -455,3 +455,14 @@ export interface SeasonDetail extends SimpleSeason {
 		crew: AggregateCrew[];
 	};
 }
+
+export interface Collection {
+	id: number;
+	name: string;
+	original_language: string;
+	original_name: string;
+	overview?: string;
+	poster_path?: string;
+	backdrop_path?: string;
+	parts: MovieType[];
+}
