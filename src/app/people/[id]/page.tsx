@@ -1,4 +1,5 @@
 import type { Metadata, Route } from "next";
+import { ChevronDownIcon } from "lucide-react";
 import { Suspense } from "react";
 import { EPISODE_SUFFIXES } from "$/lib/constants";
 import { getPersonDetails } from "$/lib/tmdb";
@@ -15,10 +16,10 @@ import {
 	HeroTitle,
 	HeroWrapper,
 } from "$/components/hero";
-import Icon from "$/components/icon";
 import Image from "$/components/image";
 import Link from "$/components/link";
 import ListItem from "$/components/list-item";
+import ListSkeleton from "$/components/list-skeleton";
 import OfficialSite from "$/components/official-site";
 import Section from "$/components/section";
 
@@ -88,102 +89,108 @@ export default async function PersonPage(props: PageProps<"/people/[id]">) {
 				</Hero>
 			</Suspense>
 			<Section name="Personal Info">
-				<ul className="flex flex-col gap-4">
-					<ListItem head="Known for">
-						<span>{person.known_for_department}</span>
-					</ListItem>
-					<ListItem head="Born">
-						{person.birthday ? (
-							<>
-								<span>{formatDate(person.birthday)}</span>
-								<span>{person.place_of_birth}</span>
-							</>
-						) : null}
-					</ListItem>
-					<ListItem head="Died">
-						{person.deathday ? <span>{formatDate(person.deathday)}</span> : null}
-					</ListItem>
-					<ListItem head="Also known as">
-						{!isNull(person.also_known_as)
-							? person.also_known_as.map((item, i) => <span key={i}>{item}</span>)
-							: null}
-					</ListItem>
-					<ListItem head="Official site">
-						<OfficialSite
-							homepage={person.homepage}
-							twitter_id={person.external_ids.twitter_id}
-							facebook_id={person.external_ids.facebook_id}
-							tiktok_id={person.external_ids.tiktok_id}
-							youtube_id={person.external_ids.youtube_id}
-							instagram_id={person.external_ids.instagram_id}
-						/>
-					</ListItem>
-				</ul>
+				<Suspense fallback={<ListSkeleton length={5} />}>
+					<ul className="flex flex-col gap-4">
+						<ListItem head="Known for">
+							<span>{person.known_for_department}</span>
+						</ListItem>
+						<ListItem head="Born">
+							{person.birthday ? (
+								<>
+									<span>{formatDate(person.birthday)}</span>
+									<span>{person.place_of_birth}</span>
+								</>
+							) : null}
+						</ListItem>
+						<ListItem head="Died">
+							{person.deathday ? <span>{formatDate(person.deathday)}</span> : null}
+						</ListItem>
+						<ListItem head="Also known as">
+							{!isNull(person.also_known_as)
+								? person.also_known_as.map((item, i) => <span key={i}>{item}</span>)
+								: null}
+						</ListItem>
+						<ListItem head="Official site">
+							<OfficialSite
+								homepage={person.homepage}
+								twitter_id={person.external_ids.twitter_id}
+								facebook_id={person.external_ids.facebook_id}
+								tiktok_id={person.external_ids.tiktok_id}
+								youtube_id={person.external_ids.youtube_id}
+								instagram_id={person.external_ids.instagram_id}
+							/>
+						</ListItem>
+					</ul>
+				</Suspense>
 			</Section>
-			{person.biography ? (
-				<Section name="Biography">
-					<p>{person.biography}</p>
-				</Section>
-			) : null}
-			<Section name="Credits">
-				{!isNull(person.combine_cast) ? (
-					<Details section="Acting" name="credits">
-						{person.combine_cast.map((item) => (
-							<DetailsItem
-								key={`${item.id + item.media_type}`}
-								id={`${item.id}`}
-								title={item.name ?? item.title}
-								isMovie={item.media_type === "movie"}
-								poster_path={item.poster_path}
-								date={item.release_date ?? item.first_air_date}
-							>
-								{item.roles.map((role) => (
-									<li key={role.credit_id} className="list-with-dot">
-										<span>{role.character ? role.character : "-"}</span>
-										{role.episode_count ? (
-											<span>
-												{role.episode_count} {formatPlural(role.episode_count, EPISODE_SUFFIXES)}
-											</span>
-										) : null}
-									</li>
-								))}
-							</DetailsItem>
-						))}
-					</Details>
+			<Suspense fallback={null}>
+				{person.biography ? (
+					<Section name="Biography">
+						<p>{person.biography}</p>
+					</Section>
 				) : null}
-				{crews && crews.size > 0
-					? crews.keys.map((key) => {
-							const category = crews.collection(key);
-							return (
-								<Details key={key} section={key} name="credits">
-									{category
-										? category.map((item) => (
-												<DetailsItem
-													key={`${item.id}-${item.media_type}`}
-													id={`${item.id}`}
-													title={item.title ?? item.name}
-													date={item.release_date ?? item.first_air_date}
-													isMovie={item.media_type === "movie"}
-													poster_path={item.poster_path}
-												>
-													{item.jobs.map((job) => (
-														<li key={job.credit_id} className="list-with-dot">
-															<span>{job.job ? job.job : "-"}</span>
-															{job.episode_count ? (
-																<span>
-																	{job.episode_count}{" "}
-																	{formatPlural(job.episode_count, EPISODE_SUFFIXES)}
-																</span>
-															) : null}
-														</li>
-													))}
-												</DetailsItem>
-											))
-										: null}
-								</Details>
-							);
-						})
-					: null}
+			</Suspense>
+			<Section name="Credits">
+				<Suspense fallback={null}>
+					{!isNull(person.combine_cast) ? (
+						<Details section="Acting" name="credits">
+							{person.combine_cast.map((item) => (
+								<DetailsItem
+									key={`${item.id + item.media_type}`}
+									id={`${item.id}`}
+									title={item.name ?? item.title}
+									isMovie={item.media_type === "movie"}
+									poster_path={item.poster_path}
+									date={item.release_date ?? item.first_air_date}
+								>
+									{item.roles.map((role) => (
+										<li key={role.credit_id} className="list-with-dot">
+											<span>{role.character ? role.character : "-"}</span>
+											{role.episode_count ? (
+												<span>
+													{role.episode_count} {formatPlural(role.episode_count, EPISODE_SUFFIXES)}
+												</span>
+											) : null}
+										</li>
+									))}
+								</DetailsItem>
+							))}
+						</Details>
+					) : null}
+					{crews && crews.size > 0
+						? crews.keys.map((key) => {
+								const category = crews.collection(key);
+								return (
+									<Details key={key} section={key} name="credits">
+										{category
+											? category.map((item) => (
+													<DetailsItem
+														key={`${item.id}-${item.media_type}`}
+														id={`${item.id}`}
+														title={item.title ?? item.name}
+														date={item.release_date ?? item.first_air_date}
+														isMovie={item.media_type === "movie"}
+														poster_path={item.poster_path}
+													>
+														{item.jobs.map((job) => (
+															<li key={job.credit_id} className="list-with-dot">
+																<span>{job.job ? job.job : "-"}</span>
+																{job.episode_count ? (
+																	<span>
+																		{job.episode_count}{" "}
+																		{formatPlural(job.episode_count, EPISODE_SUFFIXES)}
+																	</span>
+																) : null}
+															</li>
+														))}
+													</DetailsItem>
+												))
+											: null}
+									</Details>
+								);
+							})
+						: null}
+				</Suspense>
 			</Section>
 		</>
 	);
@@ -198,7 +205,7 @@ const Details = ({ section, ...props }: { section: string } & React.ComponentPro
 			<summary className="block cursor-pointer bg-accent-5 py-4 font-semibold">
 				<h3 className="flex items-center-safe justify-between px-4">
 					<span>{section}</span>
-					<Icon name="chevron-down" className="transition group-open/details:rotate-180" isHidden />
+					<ChevronDownIcon aria-hidden className="transition group-open/details:rotate-180" />
 				</h3>
 			</summary>
 			<ul className="flex flex-col divide-y">{props.children}</ul>
@@ -228,7 +235,7 @@ const DetailsItem = ({
 			<Link
 				href={`/${type}/${id}` as Route}
 				aria-label={`${name} ${type}`}
-				className="absolute top-0 left-0 z-[1] size-full"
+				className="absolute top-0 left-0 z-1 size-full"
 			/>
 			<div className="block h-fit w-12 shrink-0 overflow-hidden rounded-md">
 				<Image src={poster_path} alt={name} />

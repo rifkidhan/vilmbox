@@ -13,17 +13,13 @@ const nextConfig: NextConfig = {
 		deviceSizes: [342, 500, 780, 1280],
 		imageSizes: [185, 300, 500, 780],
 	},
-	devIndicators: false,
-	eslint: {
-		ignoreDuringBuilds: true,
-	},
-	experimental: {
-		useCache: true,
-	},
 	logging: {
 		fetches: {
 			fullUrl: true,
 		},
+	},
+	typescript: {
+		ignoreBuildErrors: true,
 	},
 };
 

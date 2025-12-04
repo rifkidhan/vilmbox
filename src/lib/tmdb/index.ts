@@ -16,7 +16,6 @@ import type {
 	TVTrending,
 	TvSeriesDetail,
 } from "./types";
-import { unstable_cacheLife as cacheLife } from "next/cache";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { shuffle } from "$/utils/array";
@@ -29,8 +28,7 @@ export const getPreference = async (): Promise<{
 	region: string;
 }> => {
 	const cookie = await cookies();
-	// biome-ignore lint/style/noNonNullAssertion: has value
-	const preference = cookie.get("preference")?.value!;
+	const preference = cookie.get("preference")?.value ?? "";
 
 	return JSON.parse(preference);
 };
@@ -38,9 +36,11 @@ export const getPreference = async (): Promise<{
 const api = async <T>({
 	endpoint,
 	query,
+	useCache,
 }: {
 	endpoint: string;
 	query?: Record<string, string>;
+	useCache?: boolean;
 }): Promise<T | never> => {
 	if (!API_KEY || !API_URL) {
 		throw new Error("API_KEY and API_URL must be provide.");
@@ -61,6 +61,7 @@ const api = async <T>({
 				Authorization: `Bearer ${API_KEY}`,
 				Accept: "application/json",
 			},
+			...(useCache && { next: { revalidate: 86400, tags: ["tmdb"] } }),
 		});
 
 		if (res.status === 404) notFound();
@@ -239,21 +240,19 @@ export const getPersonSearch = async (query: string, page = "1") => {
 
 /** get all trendings */
 export const getAllTrending = async () => {
-	"use cache";
-	cacheLife("days");
-
-	const data = await api<TrendingAll>({ endpoint: "/trending/all/day" });
+	const data = await api<TrendingAll>({
+		endpoint: "/trending/all/day",
+		useCache: true,
+	});
 
 	return data;
 };
 
 /** get trending movies */
 export const getMovieTrending = async (time = "week") => {
-	"use cache";
-	cacheLife("days");
-
 	const data = await api<MovieTrending>({
 		endpoint: `/trending/movie/${time}`,
+		useCache: true,
 	});
 
 	return data;
@@ -261,21 +260,19 @@ export const getMovieTrending = async (time = "week") => {
 
 /** get trending tv show */
 export const getTvTrending = async (time = "week") => {
-	"use cache";
-	cacheLife("days");
-
-	const data = await api<TVTrending>({ endpoint: `/trending/tv/${time}` });
+	const data = await api<TVTrending>({
+		endpoint: `/trending/tv/${time}`,
+		useCache: true,
+	});
 
 	return data;
 };
 
 /** get trending person */
 export const getPeopleTrending = async (time = "week") => {
-	"use cache";
-	cacheLife("days");
-
 	const data = await api<PeopleTrending>({
 		endpoint: `/trending/person/${time}`,
+		useCache: true,
 	});
 
 	return data;
@@ -289,11 +286,7 @@ export const getPeopleTrending = async (time = "week") => {
 
 /** get movies on cinema */
 export const getMovieOnCinema = async (region = "US", page = "1") => {
-	"use cache";
-	cacheLife("days");
-
 	const now = Date.now();
-
 	const data = await api<MovieDiscover>({
 		endpoint: "/discover/movie",
 		query: {
@@ -307,6 +300,7 @@ export const getMovieOnCinema = async (region = "US", page = "1") => {
 			with_watch_monetization_types: "flatrate",
 			without_keywords: "softcore|sexy",
 		},
+		useCache: true,
 	});
 
 	return data;
@@ -314,9 +308,6 @@ export const getMovieOnCinema = async (region = "US", page = "1") => {
 
 /** get popular movies */
 export const getMoviePopular = async (page = "1") => {
-	"use cache";
-	cacheLife("days");
-
 	const data = await api<MovieDiscover>({
 		endpoint: "/discover/movie",
 		query: {
@@ -324,6 +315,7 @@ export const getMoviePopular = async (page = "1") => {
 			sort_by: "popularity.desc",
 			without_keywords: "softcore|sexy",
 		},
+		useCache: true,
 	});
 
 	return data;
@@ -331,9 +323,6 @@ export const getMoviePopular = async (page = "1") => {
 
 /** get upcoming movies */
 export const getMovieUpcoming = async (page = "1") => {
-	"use cache";
-	cacheLife("days");
-
 	const now = Date.now();
 
 	const data = await api<MovieDiscover>({
@@ -346,6 +335,7 @@ export const getMovieUpcoming = async (page = "1") => {
 			"primary_release_date.lte": getDate(now + day * 30),
 			without_keywords: "softcore|sexy",
 		},
+		useCache: true,
 	});
 
 	return data;
@@ -353,9 +343,6 @@ export const getMovieUpcoming = async (page = "1") => {
 
 /** get top rated movies */
 export const getMovieTopRated = async (page = "1") => {
-	"use cache";
-	cacheLife("days");
-
 	const data = await api<MovieDiscover>({
 		endpoint: "/discover/movie",
 		query: {
@@ -364,6 +351,7 @@ export const getMovieTopRated = async (page = "1") => {
 			"vote_count.gte": "2000",
 			page: page,
 		},
+		useCache: true,
 	});
 
 	return data;
@@ -371,11 +359,9 @@ export const getMovieTopRated = async (page = "1") => {
 
 /** get simple movie data */
 export const getMovie = async (id: string) => {
-	"use cache";
-	cacheLife("days");
-
 	const data = await api<MovieDetail>({
 		endpoint: `/movie/${id}`,
+		useCache: true,
 	});
 
 	return data;
@@ -383,14 +369,12 @@ export const getMovie = async (id: string) => {
 
 /** get movie images */
 export const getMovieImages = async (id: string) => {
-	"use cache";
-	cacheLife("days");
-
 	const data = await api<MovieDetail["images"]>({
 		endpoint: `/movie/${id}/images`,
 		query: {
 			include_image_language: "en,null",
 		},
+		useCache: true,
 	});
 
 	const backdropImage = data.backdrops.map((image) => ({
@@ -405,11 +389,9 @@ export const getMovieImages = async (id: string) => {
 
 /** get movie videos */
 export const getMovieVideos = async (id: string) => {
-	"use cache";
-	cacheLife("days");
-
 	const data = await api<MovieDetail["videos"]>({
 		endpoint: `/movie/${id}/videos`,
+		useCache: true,
 	});
 
 	return data.results;
@@ -417,11 +399,9 @@ export const getMovieVideos = async (id: string) => {
 
 /** get movie credits */
 export const getMovieCredits = async (id: string) => {
-	"use cache";
-	cacheLife("days");
-
 	const data = await api<MovieDetail["credits"]>({
 		endpoint: `/movie/${id}/credits`,
+		useCache: true,
 	});
 
 	return data;
@@ -429,15 +409,13 @@ export const getMovieCredits = async (id: string) => {
 
 /** get more detail movie data */
 export const getMovieDetails = async (id: string, region = "US") => {
-	"use cache";
-	cacheLife("days");
-
 	const data = await api<MovieDetail>({
 		endpoint: `/movie/${id}`,
 		query: {
 			append_to_response:
 				"release_dates,alternative_titles,keywords,external_ids,videos,recommendations",
 		},
+		useCache: true,
 	});
 
 	const { release_dates, origin_country, ...res } = data;
@@ -458,9 +436,6 @@ export const getMovieDetails = async (id: string, region = "US") => {
 
 /** get top rated tv-show */
 export const getTvTopRated = async (page = "1") => {
-	"use cache";
-	cacheLife("days");
-
 	const data = await api<TVDiscover>({
 		endpoint: "/discover/tv",
 		query: {
@@ -470,6 +445,7 @@ export const getTvTopRated = async (page = "1") => {
 			"vote_count.gte": "1000",
 			page: page,
 		},
+		useCache: true,
 	});
 
 	return data;
@@ -477,9 +453,6 @@ export const getTvTopRated = async (page = "1") => {
 
 /** get popular tv-show */
 export const getTvPopular = async (page = "1") => {
-	"use cache";
-	cacheLife("days");
-
 	const data = await api<TVDiscover>({
 		endpoint: "/discover/tv",
 		query: {
@@ -488,6 +461,7 @@ export const getTvPopular = async (page = "1") => {
 			"vote_count.gte": "1000",
 			page: page,
 		},
+		useCache: true,
 	});
 
 	return data;
@@ -495,9 +469,6 @@ export const getTvPopular = async (page = "1") => {
 
 /** get airing tv-show data */
 export const getAiringTv = async (region = "US", page = "1") => {
-	"use cache";
-	cacheLife("days");
-
 	const now = Date.now();
 
 	const data = await api<TVDiscover>({
@@ -511,6 +482,7 @@ export const getAiringTv = async (region = "US", page = "1") => {
 			"air_date.lte": getDate(now + week * 2),
 			with_watch_monetization_types: "flatrate|free|rent|buy",
 		},
+		useCache: true,
 	});
 
 	return data;
@@ -518,11 +490,9 @@ export const getAiringTv = async (region = "US", page = "1") => {
 
 /** get simple tv-show data */
 export const getTv = async (id: string) => {
-	"use cache";
-	cacheLife("days");
-
 	const data = await api<TvSeriesDetail>({
 		endpoint: `/tv/${id}`,
+		useCache: true,
 	});
 
 	return data;
@@ -530,14 +500,12 @@ export const getTv = async (id: string) => {
 
 /** get tv-show images */
 export const getTvImages = async (id: string) => {
-	"use cache";
-	cacheLife("days");
-
 	const data = await api<TvSeriesDetail["images"]>({
 		endpoint: `/tv/${id}/images`,
 		query: {
 			include_image_language: "en,null",
 		},
+		useCache: true,
 	});
 
 	const backdropImage = data.backdrops.map((image) => ({
@@ -552,11 +520,9 @@ export const getTvImages = async (id: string) => {
 
 /** get tv-show videos */
 export const getTvVideos = async (id: string) => {
-	"use cache";
-	cacheLife("days");
-
 	const data = await api<TvSeriesDetail["videos"]>({
 		endpoint: `/tv/${id}/videos`,
+		useCache: true,
 	});
 
 	return data.results;
@@ -564,11 +530,9 @@ export const getTvVideos = async (id: string) => {
 
 /** get tv-show credits */
 export const getTvCredits = async (id: string) => {
-	"use cache";
-	cacheLife("days");
-
 	const data = await api<TvSeriesDetail["aggregate_credits"]>({
 		endpoint: `/tv/${id}/aggregate_credits`,
+		useCache: true,
 	});
 
 	return data;
@@ -576,15 +540,13 @@ export const getTvCredits = async (id: string) => {
 
 /** get tv-show data more details */
 export const getTvDetails = async (id: string, region = "US") => {
-	"use cache";
-	cacheLife("days");
-
 	const data = await api<TvSeriesDetail>({
 		endpoint: `/tv/${id}`,
 		query: {
 			append_to_response:
 				"alternative_titles,content_ratings,external_ids,keywords,videos,recommendations",
 		},
+		useCache: true,
 	});
 
 	const { content_ratings, origin_country, ...res } = data;
@@ -600,14 +562,12 @@ export const getTvDetails = async (id: string, region = "US") => {
 
 /** get tv-show season data */
 export const getTVSeasonDetail = async (tv_id: string, season_number: string) => {
-	"use cache";
-	cacheLife("days");
-
 	const data = await api<SeasonDetail>({
 		endpoint: `/tv/${tv_id}/season/${season_number}`,
 		query: {
 			append_to_response: "videos,aggregate_credits",
 		},
+		useCache: true,
 	});
 
 	return data;
@@ -617,14 +577,12 @@ export const getTVSeasonDetail = async (tv_id: string, season_number: string) =>
 
 /** get popular person */
 export const getPopularPerson = async (page = "1") => {
-	"use cache";
-	cacheLife("days");
-
 	const data = await api<PersonPopular>({
 		endpoint: "/person/popular",
 		query: {
 			page: page,
 		},
+		useCache: true,
 	});
 
 	return data;
@@ -632,14 +590,12 @@ export const getPopularPerson = async (page = "1") => {
 
 /** get person data */
 export const getPersonDetails = async (id: string) => {
-	"use cache";
-	cacheLife("days");
-
 	const data = await api<PersonDetail>({
 		endpoint: `/person/${id}`,
 		query: {
 			append_to_response: "external_ids,combined_credits",
 		},
+		useCache: true,
 	});
 
 	const { combined_credits, ...res } = data;
@@ -755,11 +711,9 @@ export const getPersonDetails = async (id: string) => {
 
 /** get collection details */
 export const getCollection = async (id: string) => {
-	"use cache";
-	cacheLife("days");
-
 	const data = await api<Collection>({
 		endpoint: `/collection/${id}`,
+		useCache: true,
 	});
 
 	return data;
@@ -767,14 +721,12 @@ export const getCollection = async (id: string) => {
 
 /** get collection images */
 export const getCollectionImages = async (id: string) => {
-	"use cache";
-	cacheLife("days");
-
 	const data = await api<MovieDetail["images"]>({
 		endpoint: `/collection/${id}/images`,
 		query: {
 			include_image_language: "en,null",
 		},
+		useCache: true,
 	});
 
 	const backdropImage = data.backdrops.map((image) => ({

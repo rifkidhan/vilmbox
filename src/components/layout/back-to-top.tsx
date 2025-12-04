@@ -1,8 +1,8 @@
 "use client";
 
+import { ChevronUpIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import Button from "../button";
-import Icon from "../icon";
 
 export default function BackToTop() {
 	const [visible, setVisible] = useState(false);
@@ -23,9 +23,9 @@ export default function BackToTop() {
 	}, []);
 
 	return visible ? (
-		<div className="fixed right-[3dvw] bottom-[3dvh] z-[6]">
+		<div className="fixed right-[3dvw] bottom-[3dvh] z-6">
 			<Button type="button" size="square" title="Back to top" onClick={onClick}>
-				<Icon name="chevron-top" isHidden />
+				<ChevronUpIcon aria-hidden />
 			</Button>
 		</div>
 	) : null;

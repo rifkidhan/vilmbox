@@ -1,6 +1,6 @@
 import type { CombineImage } from "$/lib/tmdb/types";
-import cn from "clsx";
 import { IMAGE_URL } from "$/lib/constants";
+import { cn } from "$/utils/merge";
 import Image from "../image";
 
 export default function GridImages({ images }: { images: CombineImage[] }) {
@@ -18,7 +18,7 @@ export default function GridImages({ images }: { images: CombineImage[] }) {
 						href={`${IMAGE_URL}original${item.file_path}`}
 						target="_blank"
 						rel="noreferrer noopener"
-						className="absolute top-0 left-0 z-[1] size-full"
+						className="absolute top-0 left-0 z-1 size-full"
 					>
 						<span className="sr-only">view full image</span>
 					</a>

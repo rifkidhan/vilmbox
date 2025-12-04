@@ -6,7 +6,7 @@ import SearchWrapper from "./search-wrapper";
 export default async function SearchLayout(props: LayoutProps<"/search">) {
 	return (
 		<>
-			<div className="sticky top-(--header-height) z-[2]">
+			<div className="sticky top-(--header-height) z-2">
 				<Suspense fallback={<SearchSegmentSkeleton />}>
 					<SearchSegment />
 				</Suspense>

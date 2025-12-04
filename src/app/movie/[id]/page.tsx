@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { IMAGE_URL } from "$/lib/constants";
 import {
@@ -35,14 +37,17 @@ import {
 	HeroTitle,
 	HeroWrapper,
 } from "$/components/hero";
-import Icon from "$/components/icon";
 import Image from "$/components/image";
 import ListItem from "$/components/list-item";
+import ListSkeleton from "$/components/list-skeleton";
 import OfficialSite from "$/components/official-site";
 import Section from "$/components/section";
 
 export const generateMetadata = async (props: PageProps<"/movie/[id]">): Promise<Metadata> => {
 	const { id } = await props.params;
+	if (id === "section") {
+		notFound();
+	}
 	const { region } = await getPreference();
 	const movie = await getMovieDetails(id, region);
 
@@ -67,6 +72,10 @@ export const generateMetadata = async (props: PageProps<"/movie/[id]">): Promise
 
 export default async function MoviePage(props: PageProps<"/movie/[id]">) {
 	const { id } = await props.params;
+	if (id === "section") {
+		notFound();
+	}
+
 	const { region } = await getPreference();
 
 	const movie = await getMovieDetails(id, region);
@@ -97,51 +106,53 @@ export default async function MoviePage(props: PageProps<"/movie/[id]">) {
 			</Suspense>
 			<CastCarousel id={id} />
 			<Section name="Details">
-				<ul className="flex flex-col gap-4">
-					<ListItem head="Original Title">
-						{movie.original_title && movie.original_title !== movie.title
-							? movie.original_title
-							: null}
-					</ListItem>
-					<ListItem head="Status">{movie.status}</ListItem>
-					<ListItem head="Release Date">
-						{movie.release_date ? formatDate(movie.release_date) : null}
-					</ListItem>
-					<ListItem head="Original Language">
-						{movie.original_language ? formatLanguage(movie.original_language) : null}
-					</ListItem>
-					<ListItem head="Official Site">
-						<OfficialSite
-							homepage={movie.homepage}
-							twitter_id={movie.external_ids.twitter_id}
-							facebook_id={movie.external_ids.facebook_id}
-							instagram_id={movie.external_ids.instagram_id}
-						/>
-					</ListItem>
-					<ListItem head="Production Countries">
-						{!isNull(movie.production_countries)
-							? movie.production_countries.map((item) => (
-									<span key={item.name}>{formatCountryName(item.iso_3166_1)}</span>
-								))
-							: null}
-					</ListItem>
-					<ListItem head="Production Companies">
-						{!isNull(movie.production_companies)
-							? movie.production_companies.map((item) => <span key={item.id}>{item.name}</span>)
-							: null}
-					</ListItem>
-					<ListItem head="Production Budget">
-						{!isNull(movie.budget) ? formatCurrency(movie.budget) : null}
-					</ListItem>
-					<ListItem head="Production Revenue">
-						{!isNull(movie.revenue) ? formatCurrency(movie.revenue) : null}
-					</ListItem>
-					<ListItem head="Keywords">
-						{!isNull(movie.keywords.keywords)
-							? movie.keywords.keywords.map((item) => <span key={item.id}>{item.name}</span>)
-							: null}
-					</ListItem>
-				</ul>
+				<Suspense fallback={<ListSkeleton />}>
+					<ul className="flex flex-col gap-4">
+						<ListItem head="Original Title">
+							{movie.original_title && movie.original_title !== movie.title
+								? movie.original_title
+								: null}
+						</ListItem>
+						<ListItem head="Status">{movie.status}</ListItem>
+						<ListItem head="Release Date">
+							{movie.release_date ? formatDate(movie.release_date) : null}
+						</ListItem>
+						<ListItem head="Original Language">
+							{movie.original_language ? formatLanguage(movie.original_language) : null}
+						</ListItem>
+						<ListItem head="Official Site">
+							<OfficialSite
+								homepage={movie.homepage}
+								twitter_id={movie.external_ids.twitter_id}
+								facebook_id={movie.external_ids.facebook_id}
+								instagram_id={movie.external_ids.instagram_id}
+							/>
+						</ListItem>
+						<ListItem head="Production Countries">
+							{!isNull(movie.production_countries)
+								? movie.production_countries.map((item) => (
+										<span key={item.name}>{formatCountryName(item.iso_3166_1)}</span>
+									))
+								: null}
+						</ListItem>
+						<ListItem head="Production Companies">
+							{!isNull(movie.production_companies)
+								? movie.production_companies.map((item) => <span key={item.id}>{item.name}</span>)
+								: null}
+						</ListItem>
+						<ListItem head="Production Budget">
+							{!isNull(movie.budget) ? formatCurrency(movie.budget) : null}
+						</ListItem>
+						<ListItem head="Production Revenue">
+							{!isNull(movie.revenue) ? formatCurrency(movie.revenue) : null}
+						</ListItem>
+						<ListItem head="Keywords">
+							{!isNull(movie.keywords.keywords)
+								? movie.keywords.keywords.map((item) => <span key={item.id}>{item.name}</span>)
+								: null}
+						</ListItem>
+					</ul>
+				</Suspense>
 			</Section>
 			<MovieImages id={id} />
 			{movie.belongs_to_collection ? (
@@ -153,12 +164,20 @@ export default async function MoviePage(props: PageProps<"/movie/[id]">) {
 				<Section name="Recommendations">
 					<Carousel>
 						<CarouselViewport>
-							{movie.recommendations.results.map((item) => (
-								<Card key={item.id} title={item.title} shadow url={`/movie/${item.id}`}>
-									<CardThumbnail title={item.title} img={item.poster_path} />
-									<CardContent rating={item.vote_average} title={item.title}></CardContent>
-								</Card>
-							))}
+							<Suspense
+								fallback={Array(8)
+									.fill(0)
+									.map((_, i) => (
+										<CardSkeleton key={i} />
+									))}
+							>
+								{movie.recommendations.results.map((item) => (
+									<Card key={item.id} title={item.title} shadow url={`/movie/${item.id}`}>
+										<CardThumbnail title={item.title} img={item.poster_path} />
+										<CardContent rating={item.vote_average} title={item.title}></CardContent>
+									</Card>
+								))}
+							</Suspense>
 						</CarouselViewport>
 						<CarouselButtons />
 					</Carousel>
@@ -194,10 +213,9 @@ const CastCarousel = async ({ id }: { id: string }) => {
 								href={`/movie/${id}/credits`}
 								className="flex size-full flex-col items-center-safe justify-center-safe"
 							>
-								<Icon
-									name="arrow-right"
-									isHidden
+								<ArrowRightIcon
 									size={36}
+									aria-hidden
 									className="transition-transform group-hover:translate-x-1"
 								/>
 								<span className="group-hover:underline">View more</span>

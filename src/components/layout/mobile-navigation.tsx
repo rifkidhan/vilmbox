@@ -1,11 +1,11 @@
 "use client";
 
 import type { Route } from "next";
+import { XIcon } from "lucide-react";
 import Link from "next/link";
 import { Suspense, useRef } from "react";
 import { NAVIGATIONS } from "$/lib/constants";
 import Button from "../button";
-import Icon from "../icon";
 import Search, { SearchSkeleton } from "./search";
 
 export default function MobileNavigation() {
@@ -20,7 +20,12 @@ export default function MobileNavigation() {
 		>
 			<div className="flex h-(--header-height) items-center justify-end gap-6">
 				<Suspense fallback={<SearchSkeleton />}>
-					<Search />
+					<Search
+						action="/search"
+						onSubmit={() => {
+							ref.current?.hidePopover();
+						}}
+					/>
 				</Suspense>
 				<Button
 					variant="ghost"
@@ -28,7 +33,7 @@ export default function MobileNavigation() {
 					popoverTarget="mobile-navigation"
 					popoverTargetAction="hide"
 				>
-					<Icon name="close" isHidden />
+					<XIcon aria-hidden />
 					<span className="sr-only">close navigation</span>
 				</Button>
 			</div>

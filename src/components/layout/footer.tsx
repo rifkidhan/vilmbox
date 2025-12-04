@@ -1,14 +1,16 @@
+import { Suspense } from "react";
 import Button from "../button";
+import Year from "./year";
 
 export default function Footer() {
-	const date = new Date();
-
 	return (
 		<footer className="w-full bg-accent-20">
 			<div className="relative mx-auto flex max-w-[92dvw]">
 				<div className="footer-top"></div>
 				<div className="flex flex-row gap-4">
-					<div>{date.getFullYear()} Vilmbox by Rifkidhan.</div>
+					<Suspense fallback={null}>
+						<Year />
+					</Suspense>
 					<div>
 						<span>Database from </span>
 						<Button asChild variant="text">

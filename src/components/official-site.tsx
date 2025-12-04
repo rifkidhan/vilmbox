@@ -1,7 +1,7 @@
 import type { ExternalIds } from "$/lib/tmdb/types";
+import { ExternalLinkIcon } from "lucide-react";
 import isNull from "$/utils/isNull";
 import Button from "./button";
-import Icon from "./icon";
 
 export interface OfficialSiteProps extends ExternalIds {
 	homepage?: string;
@@ -59,7 +59,7 @@ export default function OfficialSite(props: OfficialSiteProps) {
 						<Button asChild variant="text">
 							<a href={link.url} target="_blank" rel="noreferrer noopener">
 								<span>{link.name}</span>
-								<Icon name="external-link" isHidden />
+								<ExternalLinkIcon aria-hidden />
 							</a>
 						</Button>
 					</span>

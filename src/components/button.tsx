@@ -1,5 +1,5 @@
 import { Slot } from "@radix-ui/react-slot";
-import cn from "clsx";
+import { cn } from "$/utils/merge";
 
 type ButtonProps = {
 	variant?: "primary" | "secondary" | "outline" | "ghost" | "theme" | "text";

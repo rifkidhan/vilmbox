@@ -1,10 +1,10 @@
 "use client";
 
-import cn from "clsx";
 import useEmblaCarousel, { type UseEmblaCarouselType } from "embla-carousel-react";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { cn } from "$/utils/merge";
 import Button from "./button";
-import Icon from "./icon";
 
 type CarouselApi = UseEmblaCarouselType[1];
 
@@ -168,7 +168,7 @@ export const CarouselButtons = () => {
 			<progress
 				value={progress}
 				max={1}
-				className="progress block h-[0.5rem] w-full appearance-none overflow-hidden rounded-full border"
+				className="progress block h-2 w-full appearance-none overflow-hidden rounded-full border"
 			/>
 			<div className="flex shrink-0 flex-row gap-2">
 				<Button
@@ -178,7 +178,7 @@ export const CarouselButtons = () => {
 					onClick={scrollPrev}
 					disabled={!canScrollPrev}
 				>
-					<Icon name="chevron-left" isHidden />
+					<ChevronLeftIcon aria-hidden />
 					<span className="sr-only">Previous slide</span>
 				</Button>
 				<Button
@@ -188,7 +188,7 @@ export const CarouselButtons = () => {
 					onClick={scrollNext}
 					disabled={!canScrollNext}
 				>
-					<Icon name="chevron-right" isHidden />
+					<ChevronRightIcon aria-hidden />
 					<span className="sr-only">Next slide</span>
 				</Button>
 			</div>
@@ -217,7 +217,7 @@ export const CarouselDotButtons = ({ length = 8 }: { length?: number }) => {
 							type="button"
 							aria-label={`Slides ${i + 1}`}
 							aria-current={slideInView === i}
-							className="size-2 cursor-pointer rounded-full border aria-[current=true]:bg-accent-90 md:size-4"
+							className="size-2 cursor-pointer rounded-full border aria-current:bg-accent-90 md:size-4"
 							onClick={() => scrollTo(i)}
 						/>
 					))}

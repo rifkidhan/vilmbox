@@ -1,6 +1,6 @@
 import type { Route } from "next";
-import cn from "clsx";
-import Icon from "./icon";
+import { StarIcon } from "lucide-react";
+import { cn } from "$/utils/merge";
 import Image from "./image";
 import Link from "./link";
 
@@ -36,7 +36,7 @@ export const Card = ({
 						href={url as Route}
 						aria-label={title}
 						draggable
-						className="absolute top-0 left-0 z-[1] size-full"
+						className="absolute top-0 left-0 z-1 size-full"
 					/>
 				) : null}
 				{props.children}
@@ -91,12 +91,7 @@ export const CardContent = ({
 				<>
 					{rating ? (
 						<div className="flex flex-row items-center gap-1">
-							<Icon
-								name="star"
-								isHidden
-								stroke="none"
-								className="h-auto max-w-[1rem] fill-sunflower"
-							/>
+							<StarIcon stroke="none" className="h-auto max-w-4 fill-sunflower" aria-hidden />
 							<span>{Math.floor(rating * 10)}%</span>
 						</div>
 					) : null}

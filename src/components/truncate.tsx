@@ -1,9 +1,9 @@
 "use client";
 
-import cn from "clsx";
+import { ChevronDownIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { cn } from "$/utils/merge";
 import throttle from "$/utils/throttle";
-import Icon from "./icon";
 
 export default function Truncate({
 	length = 3,
@@ -77,7 +77,7 @@ export default function Truncate({
 					aria-expanded={open}
 				>
 					<span>{open ? "View less" : "View more"}</span>
-					<Icon name="chevron-down" isHidden />
+					<ChevronDownIcon aria-hidden />
 				</button>
 			) : null}
 		</div>

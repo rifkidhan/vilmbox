@@ -1,38 +1,38 @@
 {
 	"name": "vilmbox",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"private": true,
 	"scripts": {
-		"dev": "next dev --turbopack",
+		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"check": "biome check && prettier --cache --check \"**/*.{tsx,css}\"",
+		"check": "biome check && next typegen && tsc --noEmit",
 		"check:safe": "biome check --write",
-		"format": "biome format --write && prettier --cache --write \"**/*.{tsx,css}\""
+		"format": "biome format --write && prettier --write \"./src/**/*.{tsx,css}\""
 	},
 	"dependencies": {
-		"@next/third-parties": "^15.5.4",
+		"@next/third-parties": "16.0.7",
 		"@radix-ui/react-dialog": "^1.1.15",
-		"@radix-ui/react-slot": "^1.2.3",
+		"@radix-ui/react-slot": "^1.2.4",
 		"clsx": "^2.1.1",
 		"embla-carousel-react": "^8.6.0",
-		"next": "15.5.4",
+		"lucide-react": "^0.555.0",
+		"next": "16.0.7",
 		"next-themes": "^0.4.6",
-		"react": "^19.1.1",
-		"react-dom": "^19.1.1"
+		"react": "19.2.1",
+		"react-dom": "19.2.1",
+		"tailwind-merge": "^3.4.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.2.4",
-		"@tailwindcss/postcss": "^4.1.13",
-		"@types/node": "^20.19.19",
-		"@types/react": "^19.1.16",
-		"@types/react-dom": "^19.1.9",
-		"tailwindcss": "^4.1.13",
+		"@biomejs/biome": "2.3.5",
+		"@tailwindcss/postcss": "^4.1.17",
+		"@types/node": "^24.10.1",
+		"@types/react": "19.2.7",
+		"@types/react-dom": "19.2.3",
+		"prettier-plugin-tailwindcss": "^0.7.2",
+		"tailwindcss": "^4.1.17",
 		"typescript": "^5.9.3"
 	},
-	"trustedDependencies": [
-		"@tailwindcss/oxide"
-	],
 	"prettier": {
 		"printWidth": 100,
 		"useTabs": true,
@@ -44,5 +44,14 @@
 		"tailwindFunctions": [
 			"cn"
 		]
-	}
+	},
+	"postcss": {
+		"plugins": {
+			"@tailwindcss/postcss": {}
+		}
+	},
+	"trustedDependencies": [
+		"@tailwindcss/oxide",
+		"sharp"
+	]
 }

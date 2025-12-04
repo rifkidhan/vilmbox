@@ -10,8 +10,8 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@radix-ui/react-dialog";
+import { XIcon } from "lucide-react";
 import Button from "./button";
-import Icon from "./icon";
 
 export const ModalRoot = (props: DialogProps) => {
 	return <Dialog {...props}>{props.children}</Dialog>;
@@ -42,7 +42,7 @@ export const ModalContent = ({
 							</DialogTitle>
 							<DialogClose asChild>
 								<Button type="button" variant="ghost" size="square" className="shrink-0">
-									<Icon name="close" isHidden />
+									<XIcon aria-hidden />
 								</Button>
 							</DialogClose>
 						</div>

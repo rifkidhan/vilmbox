@@ -15,8 +15,16 @@ export default async function MovieMediaPage(props: PageProps<"/movie/[id]/media
 
 	return (
 		<>
-			<MovieImages id={id} />
-			<MovieVideos id={id} />
+			<Section name="Images">
+				<Suspense fallback={<GridSkeleton />}>
+					<MovieImages id={id} />
+				</Suspense>
+			</Section>
+			<Section name="Videos">
+				<Suspense fallback={<GridSkeleton />}>
+					<MovieVideos id={id} />
+				</Suspense>
+			</Section>
 		</>
 	);
 }
@@ -24,23 +32,11 @@ export default async function MovieMediaPage(props: PageProps<"/movie/[id]/media
 const MovieImages = async (props: { id: string }) => {
 	const images = await getMovieImages(props.id);
 
-	return (
-		<Section name="Images">
-			<Suspense fallback={<GridSkeleton />}>
-				<GridImages images={images} />
-			</Suspense>
-		</Section>
-	);
+	return <GridImages images={images} />;
 };
 
 const MovieVideos = async (props: { id: string }) => {
 	const videos = await getMovieVideos(props.id);
 
-	return (
-		<Section name="Videos">
-			<Suspense fallback={<GridSkeleton />}>
-				<GridVideos videos={videos} />
-			</Suspense>
-		</Section>
-	);
+	return <GridVideos videos={videos} />;
 };

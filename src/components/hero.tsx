@@ -1,11 +1,11 @@
 import type { Route } from "next";
 import type { Genre, MediaType, Video } from "$/lib/tmdb/types";
-import cn from "clsx";
+import { ArrowRightIcon, StarIcon } from "lucide-react";
 import Link from "next/link";
 import { getYear } from "$/utils/format";
 import mediaType from "$/utils/media-type";
+import { cn } from "$/utils/merge";
 import Button from "./button";
-import Icon from "./icon";
 import Image from "./image";
 import Truncate from "./truncate";
 import { VideoButton } from "./video";
@@ -115,7 +115,7 @@ export const HeroAction = ({
 	return (
 		<div className="flex items-center gap-6 @5xl/hero:col-span-2">
 			<div className="flex flex-row items-center gap-1">
-				<Icon name="star" stroke="none" isHidden className="size-10 fill-sunflower" />
+				<StarIcon stroke="none" className="size-10 fill-sunflower" aria-hidden />
 				<div className="flex flex-col">
 					<span className="font-semibold">{Math.floor(vote_average * 10)}%</span>
 					<span className="text-vb-sm">{vote_count}</span>
@@ -160,12 +160,7 @@ export const HeroMinimal = ({
 				<ul className="list-with-dot">
 					{type === "tv" ? <li>TV Series</li> : null}
 					<li className="inline-flex items-center gap-1">
-						<Icon
-							name="star"
-							stroke="none"
-							isHidden
-							className="h-auto max-w-[1rem] fill-sunflower"
-						/>
+						<StarIcon stroke="none" className="h-auto max-w-4 fill-sunflower" aria-hidden />
 						<span>{Math.floor(vote_average * 10)}%</span>
 					</li>
 					{date ? <li>{getYear(date)}</li> : null}
@@ -174,7 +169,7 @@ export const HeroMinimal = ({
 				<Button asChild variant="theme" size="lg">
 					<Link href={`/${mediaType(type).id}/${id}` as Route}>
 						<span>More details</span>
-						<Icon name="arrow-right" isHidden />
+						<ArrowRightIcon aria-hidden />
 					</Link>
 				</Button>
 			</div>
@@ -200,23 +195,23 @@ export const HeroSkeleton = ({ type = "full" }: { type?: "full" | "minimal" | "b
 					<>
 						<div className="h-[clamp(150px,35cqh+2rem,400px)] w-[35cqw] animate-pulse rounded-xl bg-accent-40 @3xl/hero:w-[25cqw]" />
 						<div className="flex flex-col gap-10 *:w-full *:animate-pulse *:rounded-lg *:bg-accent-40">
-							<div className="h-[5rem]" />
-							<div className="h-[4rem]" />
-							<div className="h-[4rem]" />
+							<div className="h-20" />
+							<div className="h-16" />
+							<div className="h-16" />
 						</div>
 					</>
 				)}
 				{type === "minimal" && (
 					<div className="flex w-full flex-col gap-8 *:w-full *:animate-pulse *:rounded-lg *:bg-accent-40 md:w-[70%] lg:w-1/2">
-						<div className="h-[4rem]" />
-						<div className="h-[5rem]" />
-						<div className="h-[5rem]" />
+						<div className="h-16" />
+						<div className="h-20" />
+						<div className="h-20" />
 					</div>
 				)}
 				{type === "banner" && (
 					<>
 						<div className="hidden h-[max(100px,8vh+2rem)] w-[10%] shrink-0 animate-pulse rounded-lg bg-accent-40 md:block" />
-						<div className="h-[6rem] w-[30%] animate-pulse rounded-lg bg-accent-40" />
+						<div className="h-24 w-[30%] animate-pulse rounded-lg bg-accent-40" />
 					</>
 				)}
 			</div>

@@ -21,7 +21,6 @@ export const metadata: Metadata = {
 };
 
 export default async function TVPage() {
-	const { region } = await getPreference();
 	const trending = await getTvTrending("day");
 	const randomTv = randomize(trending.results);
 
@@ -62,7 +61,7 @@ export default async function TVPage() {
 			</Section>
 			<PopularMovies />
 			<TopRatedTv />
-			<AiringToday region={region} />
+			<AiringToday />
 		</>
 	);
 }
@@ -123,7 +122,8 @@ const TopRatedTv = async () => {
 	);
 };
 
-const AiringToday = async ({ region }: { region: string }) => {
+const AiringToday = async () => {
+	const { region } = await getPreference();
 	const airing = await getAiringTv(region);
 
 	return (

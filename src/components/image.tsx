@@ -1,10 +1,10 @@
 "use client";
 
-import cn from "clsx";
+import { ImageOffIcon } from "lucide-react";
 import { type ImageLoaderProps, default as NextImage } from "next/image";
 import { useState } from "react";
 import { IMAGE_URL } from "$/lib/constants";
-import Icon from "./icon";
+import { cn } from "$/utils/merge";
 
 type ImageProps = {
 	type?: "poster" | "backdrop" | "still";
@@ -35,14 +35,14 @@ export default function Image({
 	const height = type === "poster" ? Math.round(width * 1.5) : Math.round(width / 1.78);
 
 	const imageClass = cn(
-		"h-auto w-full bg-accent-50 object-cover object-center [&.backdrop,&.still]:not-[&.full]:aspect-video [&.full]:h-full [&.poster]:not-[&.full]:aspect-[2/3]",
+		"h-auto w-full bg-accent-50 object-cover object-center [&.backdrop,&.still]:not-[&.full]:aspect-video [&.full]:h-full [&.poster]:not-[&.full]:aspect-2/3",
 		[`${type}`],
 		{ full: !fill && full },
 		className,
 	);
 
 	const fallbackClass = cn(
-		"flex h-auto w-full items-center justify-center bg-accent-50 [&.backdrop,&.still]:not-[&.full]:aspect-video [&.full]:h-full [&.poster]:not-[&.full]:aspect-[2/3]",
+		"flex h-auto w-full items-center justify-center bg-accent-50 [&.backdrop,&.still]:not-[&.full]:aspect-video [&.full]:h-full [&.poster]:not-[&.full]:aspect-2/3",
 		[`${type}`],
 		{ full: full },
 		className,
@@ -66,7 +66,7 @@ export default function Image({
 		/>
 	) : (
 		<div className={fallbackClass}>
-			<Icon name="image" isHidden />
+			<ImageOffIcon aria-hidden />
 			<span className="sr-only">image fallback</span>
 		</div>
 	);

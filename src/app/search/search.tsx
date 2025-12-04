@@ -1,9 +1,9 @@
 "use client";
 
+import { SearchIcon } from "lucide-react";
 import Form from "next/form";
 import { useSearchParams, useSelectedLayoutSegment } from "next/navigation";
 import { NAVIGATIONS } from "$/lib/constants";
-import Icon from "$/components/icon";
 
 export default function SearchSegment() {
 	const segment = useSelectedLayoutSegment();
@@ -25,7 +25,7 @@ export default function SearchSegment() {
 				minLength={2}
 				className="w-full bg-none focus:outline-0"
 			/>
-			<Icon name="search" isHidden className="size-4 shrink-0" />
+			<SearchIcon aria-hidden className="size-4 shrink-0" />
 		</Form>
 	) : null;
 }
@@ -38,7 +38,7 @@ export function SearchSegmentSkeleton() {
 				placeholder="Search movie, tv-show, or person"
 				className="w-full bg-none focus:outline-0"
 			/>
-			<Icon name="search" isHidden className="size-4 shrink-0" />
+			<SearchIcon aria-hidden className="size-4 shrink-0" />
 		</form>
 	);
 }

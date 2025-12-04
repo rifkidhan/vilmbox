@@ -1,9 +1,9 @@
 "use client";
 
-import cn from "clsx";
 import Link from "next/link";
 import { useSearchParams, useSelectedLayoutSegment } from "next/navigation";
 import { NAVIGATIONS } from "$/lib/constants";
+import { cn } from "$/utils/merge";
 
 export default function SideNavigation() {
 	const segment = useSelectedLayoutSegment();

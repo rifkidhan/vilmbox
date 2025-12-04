@@ -1,9 +1,9 @@
 "use client";
 
+import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Button from "../button";
-import Icon from "../icon";
 
 export default function ThemeTogle() {
 	const { setTheme, resolvedTheme } = useTheme();
@@ -14,7 +14,20 @@ export default function ThemeTogle() {
 
 	return (
 		<Button type="button" size="square" title="Toggle Theme" variant="ghost" onClick={themeToggle}>
-			<Icon name="theme" isHidden />
+			<Icon />
 		</Button>
 	);
 }
+
+const Icon = () => {
+	const { resolvedTheme } = useTheme();
+	const [mount, setMount] = useState(false);
+
+	useEffect(() => {
+		setMount(true);
+	}, []);
+
+	const ThemeIcon = resolvedTheme === "dark" ? MoonIcon : SunIcon;
+
+	return mount ? <ThemeIcon /> : <MonitorIcon />;
+};

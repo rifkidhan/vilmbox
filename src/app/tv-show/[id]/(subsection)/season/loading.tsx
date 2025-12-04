@@ -4,7 +4,7 @@ export default function Loading() {
 			{Array(12)
 				.fill(0)
 				.map((_, i) => (
-					<li key={i} className="h-[10rem] w-full animate-pulse rounded-xl bg-accent-40" />
+					<li key={i} className="h-40 w-full animate-pulse rounded-xl bg-accent-40" />
 				))}
 		</ul>
 	);

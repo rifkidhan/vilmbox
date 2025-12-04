@@ -87,7 +87,12 @@ export default async function CollectionPage(props: PageProps<"/collection/[id]"
 					</div>
 				</Suspense>
 			</Section>
-			<CollectionImages id={id} />
+
+			<Section name="Media">
+				<Suspense fallback={<GridSkeleton length={20} />}>
+					<CollectionImages id={id} />
+				</Suspense>
+			</Section>
 		</>
 	);
 }
@@ -95,13 +100,7 @@ export default async function CollectionPage(props: PageProps<"/collection/[id]"
 const CollectionImages = async ({ id }: { id: string }) => {
 	const images = await getCollectionImages(id);
 
-	return (
-		<Section name="Media">
-			<Suspense fallback={<GridSkeleton length={20} />}>
-				<GridImages images={images} />
-			</Suspense>
-		</Section>
-	);
+	return <GridImages images={images} />;
 };
 
 const MoviesSkeleton = () => {
@@ -110,7 +109,7 @@ const MoviesSkeleton = () => {
 			{Array(12)
 				.fill(0)
 				.map((_, i) => (
-					<li key={i} className="h-[10rem] w-full animate-pulse rounded-xl bg-accent-40" />
+					<li key={i} className="h-40 w-full animate-pulse rounded-xl bg-accent-40" />
 				))}
 		</ul>
 	);

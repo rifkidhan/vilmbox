@@ -1,10 +1,10 @@
 "use client";
 
 import type { Route } from "next";
+import { ChevronLeftIcon, ChevronRightIcon, EllipsisIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import Button from "./button";
-import Icon from "./icon";
 
 export default function Pagination({ max = 50 }) {
 	const pathname = usePathname();
@@ -79,7 +79,7 @@ export default function Pagination({ max = 50 }) {
 				size="square"
 				variant="ghost"
 			>
-				<Icon name="chevron-left" isHidden />
+				<ChevronLeftIcon aria-hidden />
 				<span className="sr-only">Previous page</span>
 			</Button>
 			{pagesToShow.map((item, i) => {
@@ -90,7 +90,7 @@ export default function Pagination({ max = 50 }) {
 							className="inline-flex size-9 items-center justify-center"
 							aria-hidden="true"
 						>
-							<Icon name="ellipsis" isHidden />
+							<EllipsisIcon aria-hidden />
 						</span>
 					);
 				else if (item.value === 1)
@@ -137,7 +137,7 @@ export default function Pagination({ max = 50 }) {
 				size="square"
 				variant="ghost"
 			>
-				<Icon name="chevron-right" isHidden />
+				<ChevronRightIcon aria-hidden />
 				<span className="sr-only">Next page</span>
 			</Button>
 		</div>

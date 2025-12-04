@@ -2,9 +2,9 @@
 
 import type { Video } from "$/lib/tmdb/types";
 import { YouTubeEmbed } from "@next/third-parties/google";
+import { PlayIcon } from "lucide-react";
 import { useState } from "react";
 import Button from "./button";
-import Icon from "./icon";
 import { ModalContent, ModalRoot, ModalTrigger } from "./modal";
 
 export const VideoButton = ({ video }: { video: Video }) => {
@@ -14,7 +14,7 @@ export const VideoButton = ({ video }: { video: Video }) => {
 		<ModalRoot open={open} onOpenChange={setOpen}>
 			<ModalTrigger>
 				<Button type="button" variant="theme">
-					<Icon name="play" isHidden />
+					<PlayIcon aria-hidden />
 					<span>Play {video.type}</span>
 				</Button>
 			</ModalTrigger>
@@ -37,7 +37,7 @@ export const VideoThumbnail = ({ video }: { video: Video }) => {
 	return (
 		<ModalRoot open={open} onOpenChange={setOpen}>
 			<li
-				className="relative block h-auto w-full overflow-hidden rounded-lg before:absolute before:top-0 before:block before:h-[80px] before:w-full before:overflow-hidden before:bg-linear-to-b before:from-black before:to-100% before:px-[clamp(0.5rem,0.12rem+12vw,1.5rem)] before:py-[clamp(0.25rem,0.12rem+12vi,1.5rem)] before:text-vb-normal before:text-ellipsis before:whitespace-nowrap before:text-white/95 before:content-[attr(title)] after:block after:pb-[calc(100%/(16/9))] after:content-['']"
+				className="relative block h-auto w-full overflow-hidden rounded-lg before:absolute before:top-0 before:block before:h-20 before:w-full before:overflow-hidden before:bg-linear-to-b before:from-black before:to-100% before:px-[clamp(0.5rem,0.12rem+12vw,1.5rem)] before:py-[clamp(0.25rem,0.12rem+12vi,1.5rem)] before:text-vb-normal before:text-ellipsis before:whitespace-nowrap before:text-white/95 before:content-[attr(title)] after:block after:pb-[calc(100%/(16/9))] after:content-['']"
 				title={video.name}
 				style={{
 					backgroundImage: `url(${image_url})`,

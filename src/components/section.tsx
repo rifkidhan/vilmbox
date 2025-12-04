@@ -1,5 +1,5 @@
-import cn from "clsx";
 import Image from "next/image";
+import { cn } from "$/utils/merge";
 import asset from "./assets/chris-murray-iwfHhOZLVMU-unsplash.jpg";
 
 export default function Section({
